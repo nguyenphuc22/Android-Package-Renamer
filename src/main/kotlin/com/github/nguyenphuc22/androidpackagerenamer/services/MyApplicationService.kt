@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.nguyenphuc22.androidpackagerenamer.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.nguyenphuc22.androidpackagerenamer.MyBundle
 
 class MyApplicationService {
 

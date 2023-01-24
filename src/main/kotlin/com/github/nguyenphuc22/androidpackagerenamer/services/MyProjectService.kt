@@ -1,7 +1,7 @@
-package org.jetbrains.plugins.template.services
+package com.github.nguyenphuc22.androidpackagerenamer.services
 
 import com.intellij.openapi.project.Project
-import org.jetbrains.plugins.template.MyBundle
+import com.github.nguyenphuc22.androidpackagerenamer.MyBundle
 
 class MyProjectService(project: Project) {
 
