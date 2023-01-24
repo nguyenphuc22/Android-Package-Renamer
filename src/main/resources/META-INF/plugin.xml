@@ -2,7 +2,7 @@
 <idea-plugin>
     <id>com.github.nguyenphuc22.androidpackagerenamer</id>
     <name>Platform Android-Package-Renamer</name>
-    <vendor email="nguyenphuc220100@yourcompany.com" url="https://www.yourcompany.com">PhucVR</vendor>
+    <vendor email="nguyenphuc220100@gmail.com" url="https://github.com/nguyenphuc22/Android-Package-Renamer">PhucVR</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
@@ -15,7 +15,7 @@
             <add-to-group group-id="FileMenu" anchor="last"/>
             <action id="com.example.demo.HelloWorldAction"
                     class="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage"
-                    text="Say Hello World"
+                    text="Rename Package"
                     description="Displays a greeting message"
             />
         </group>
