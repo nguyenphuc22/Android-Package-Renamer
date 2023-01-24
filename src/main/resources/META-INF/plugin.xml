@@ -16,7 +16,7 @@
             <action id="com.example.demo.HelloWorldAction"
                     class="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage"
                     text="Rename Package"
-                    description="Create "
+                    description="This plugin is Safe And Fast Android Rename Package allows users to safely and quickly change the package name of an Android project. This plugin uses a series of automated refactoring steps to ensure that all references to the old package name are updated throughout the project, without breaking the code or causing errors"
             />
         </group>
     </actions>
