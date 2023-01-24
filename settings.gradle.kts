@@ -1,1 +1,1 @@
-rootProject.name = "Android-Package-Renamer"
+rootProject.name = "Android Package Renamer"
