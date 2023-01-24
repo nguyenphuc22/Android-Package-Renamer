@@ -1,18 +1,24 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.nguyenphuc22.androidpackagerenamer</id>
-    <name>IntelliJ Platform Plugin Android-Package-Renamer</name>
-    <vendor>nguyenphuc22</vendor>
+    <name>Platform Android-Package-Renamer</name>
+    <vendor email="nguyenphuc220100@yourcompany.com" url="https://www.yourcompany.com">PhucVR</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.nguyenphuc22.androidpackagerenamer.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.nguyenphuc22.androidpackagerenamer.services.MyProjectService"/>
+
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.nguyenphuc22.androidpackagerenamer.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <actions>
+        <group id="HelloWorld" text="Hello World">
+            <add-to-group group-id="FileMenu" anchor="last"/>
+            <action id="com.example.demo.HelloWorldAction"
+                    class="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage"
+                    text="Say Hello World"
+                    description="Displays a greeting message"
+            />
+        </group>
+    </actions>
+
 </idea-plugin>
