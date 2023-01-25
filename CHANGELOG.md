@@ -7,7 +7,7 @@
 ## [0.0.4] - 2023-01-24
 
 ### Added
-- Initial Function rename package android project.
+- Function rename package android project.
 
 [Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.1...HEAD
 [0.0.1]: https://github.com/nguyenphuc22/Android-Package-Renamer/commits/v0.0.1
