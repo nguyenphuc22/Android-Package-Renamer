@@ -13,6 +13,12 @@ import java.io.File
 import java.io.IOException
 
 class WorkingPackage : AnAction() {
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        val project = e.project
+
+        e.presentation.isEnabled = project != null
+    }
     override fun actionPerformed(e: AnActionEvent) {
         val oldPackageName = getPackageName(e.project!!)
 
