@@ -67,7 +67,7 @@ class WorkingPackage : AnAction() {
             renameGradle(e.project!!,oldPackageName,newPackageName)
 
             // Display Success
-            Messages.showInfoMessage("Your package ${newPackageName}. \n Don't forget Sync Project with Gradle Files.","Rename Package Success")
+            Messages.showInfoMessage("Your package ${newPackageName} \n Don't forget Sync Project with Gradle Files.","Rename Package Success")
         }
 
     }
