@@ -11,9 +11,9 @@
     </extensions>
 
     <actions>
-        <group id="HelloWorld" text="Hello World">
+        <group id="RenamePackage" text="RenamePackage">
             <add-to-group group-id="FileMenu" anchor="last"/>
-            <action id="com.example.demo.HelloWorldAction"
+            <action id="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage.RenamePackagei"
                     class="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage"
                     text="Rename Package"
                     description="Rename package safe and fast"

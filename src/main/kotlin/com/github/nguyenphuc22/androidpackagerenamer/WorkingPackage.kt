@@ -1,7 +1,9 @@
 package com.github.nguyenphuc22.androidpackagerenamer
 
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
@@ -11,6 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import java.io.File
 import java.io.IOException
+import java.lang.StringBuilder
 
 class WorkingPackage : AnAction() {
     override fun update(e: AnActionEvent) {
@@ -64,6 +67,9 @@ class WorkingPackage : AnAction() {
             renameEachFile(folder!!,newPackageName,oldPackageName)
 //          Rename applicationId in build.gradle
             renameGradle(e.project!!,oldPackageName,newPackageName)
+
+            // Restart
+            e.actionManager.getAction(IdeActions.ACTION_COPY)
         }
 
     }
@@ -83,12 +89,16 @@ class WorkingPackage : AnAction() {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
         val sourceDir = vfs.findFileByPath(project.basePath + "/app/src/main/AndroidManifest.xml")
         if (sourceDir != null) {
-            val data = FileDocumentManager.getInstance().getDocument(sourceDir)!!.text
+            var data = FileDocumentManager.getInstance().getDocument(sourceDir)!!.text
             if (data.contains("package=")) {
-                val replace = data.replace(oldPackage,newPackage)
-                WriteAction.run<IOException> {
-                    VfsUtil.saveText(sourceDir, replace)
-                }
+                data = data.replace(oldPackage,newPackage)
+            } else {
+                val builder = StringBuilder(data)
+                builder.insert(builder.indexOf("<manifest") + "<manifest".length," package=\"${newPackage}\" \n \t")
+                data = builder.toString()
+            }
+            WriteAction.run<IOException> {
+                VfsUtil.saveText(sourceDir, data)
             }
         }
     }
