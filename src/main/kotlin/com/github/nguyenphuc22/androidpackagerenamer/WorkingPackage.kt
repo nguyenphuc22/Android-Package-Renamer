@@ -24,49 +24,45 @@ class WorkingPackage : AnAction() {
 
         val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,null)
 
-
-
         if (newPackageName != null) {
             // Rename Android Manifest.xml
             renameManifest(e.project!!,newPackageName,oldPackageName)
             val newFolderName = newPackageName.replace(oldChar =  '.', newChar = '/')
-            // Create new folder follow new packageName
+//          Create new folder follow new packageName
             val vfs = VirtualFileManager.getInstance().getFileSystem("file")
-            // source
+//          source
             val sourceDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/main/java")
-            val newFolder: VirtualFile = VfsUtil.createDirectoryIfMissing(sourceDir, newFolderName)
-            // Android TestFolder
+            VfsUtil.createDirectories(sourceDir!!.path + "/" + newFolderName)
+//          Android TestFolder
             val androidTestDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/androidTest/java")
-            val newAndroidTestFolder: VirtualFile = VfsUtil.createDirectoryIfMissing(androidTestDir, newFolderName)
-            // TestFolder
+            VfsUtil.createDirectories(androidTestDir!!.path + "/" + newFolderName)
+//          TestFolder
             val testDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/test/java")
-            val newTestFolder: VirtualFile = VfsUtil.createDirectoryIfMissing(testDir, newFolderName)
+            VfsUtil.createDirectories(testDir!!.path + "/" + newFolderName)
 
-            // Move all files in old folder to new folder
-            // Source
+//          Move all files in old folder to new folder
+//          Source
             var oldPathFolder = e.project!!.basePath + "/app/src/main/java/" + oldPackageName.replace('.','/')
             var newPathFolder = e.project!!.basePath + "/app/src/main/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
-            // Rename each file
-            //renameEachFile(newPathFolder,newPackageName,oldPackageName)
-            val vfs1 = VirtualFileManager.getInstance().getFileSystem("file")
-            val folder = vfs1.findFileByPath(newPathFolder)
+//          Rename each file
+            var folder = vfs.findFileByPath(newPathFolder)
             renameEachFile(folder!!,newPackageName,oldPackageName)
-            // Android TestFolder
+//          Android TestFolder
             oldPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + oldPackageName.replace('.','/')
             newPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
-            // Rename each file
-            renameEachFile(newPathFolder,newPackageName,oldPackageName)
-
-            // TestFolder
+//          Rename each file
+            folder = vfs.findFileByPath(newPathFolder)
+            renameEachFile(folder!!,newPackageName,oldPackageName)
+//          TestFolder
             oldPathFolder = e.project!!.basePath + "/app/src/test/java/" + oldPackageName.replace('.','/')
             newPathFolder = e.project!!.basePath + "/app/src/test/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
-            // Rename each file
-            renameEachFile(newPathFolder,newPackageName,oldPackageName)
-
-            // Rename applicationId in build.gradle
+//          Rename each file
+            folder = vfs.findFileByPath(newPathFolder)
+            renameEachFile(folder!!,newPackageName,oldPackageName)
+//          Rename applicationId in build.gradle
             renameGradle(e.project!!,oldPackageName,newPackageName)
         }
 
@@ -101,26 +97,12 @@ class WorkingPackage : AnAction() {
         val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
         val newFolder = VfsUtil.findFileByIoFile(File(newPath), true)
         for (file in oldFolder!!.children) {
-            file.move(this, newFolder!!)
-        }
-        oldFolder.parent.delete(this)
-    }
-
-    fun renameEachFile(pathString : String,newPackage: String,oldPackage: String) {
-        val vfs = VirtualFileManager.getInstance().getFileSystem("file")
-        val folder = vfs.findFileByPath(pathString)
-        for (file in folder!!.children) {
-            if (file.isDirectory) {
-                renameEachFile(file.path,newPackage,oldPackage)
-            } else {
-                val data = FileDocumentManager.getInstance().getDocument(file)!!.text
-                if (data.contains(oldPackage)) {
-                    val replace = data.replace(oldPackage,newPackage)
-                    WriteAction.run<IOException> {
-                        VfsUtil.saveText(file, replace)
-                    }
-                }
+            WriteAction.run<IOException> {
+                file.move(this, newFolder!!)
             }
+        }
+        WriteAction.run<IOException> {
+            oldFolder.parent.delete(this)
         }
     }
 
