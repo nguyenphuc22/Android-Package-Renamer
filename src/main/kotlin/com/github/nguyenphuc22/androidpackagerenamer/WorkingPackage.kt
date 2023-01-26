@@ -112,7 +112,15 @@ class WorkingPackage : AnAction() {
             }
         }
         WriteAction.run<IOException> {
-            oldFolder.parent.delete(this)
+            deleteOldFolder(oldFolder)
+        }
+    }
+
+    fun deleteOldFolder(oldFolder:VirtualFile) {
+        if (oldFolder.children.isEmpty()) {
+            val parent = oldFolder.parent
+            oldFolder.delete(this)
+            deleteOldFolder(parent)
         }
     }
 
