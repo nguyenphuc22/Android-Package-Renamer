@@ -1,9 +1,7 @@
 package com.github.nguyenphuc22.androidpackagerenamer
 
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
@@ -25,7 +23,7 @@ class WorkingPackage : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val oldPackageName = getPackageName(e.project!!)
 
-        val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,null)
+        val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,MyValidator())
 
         if (newPackageName != null) {
             // Rename Android Manifest.xml
