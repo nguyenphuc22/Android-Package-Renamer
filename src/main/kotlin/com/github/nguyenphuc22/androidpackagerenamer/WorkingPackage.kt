@@ -68,8 +68,8 @@ class WorkingPackage : AnAction() {
 //          Rename applicationId in build.gradle
             renameGradle(e.project!!,oldPackageName,newPackageName)
 
-            // Restart
-            e.actionManager.getAction(IdeActions.ACTION_COPY)
+            // Display Success
+            Messages.showInfoMessage("Your package ${newPackageName}. \n Don't forget Sync Project with Gradle Files.","Rename Package Success")
         }
 
     }
