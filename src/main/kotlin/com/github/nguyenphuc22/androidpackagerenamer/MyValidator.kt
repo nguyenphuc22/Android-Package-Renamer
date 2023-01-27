@@ -7,6 +7,10 @@ class MyValidator : InputValidatorEx {
     override fun checkInput(inputString: String?): Boolean {
         return !inputString.isNullOrEmpty() && inputString.isNotBlank() && inputString.matches(Regex(pattern))
     }
+
+    override fun canClose(inputString: String?): Boolean {
+        return true
+    }
     override fun getErrorText(inputString: String?): String? {
         var result : String? = null
         if (inputString != null) {
