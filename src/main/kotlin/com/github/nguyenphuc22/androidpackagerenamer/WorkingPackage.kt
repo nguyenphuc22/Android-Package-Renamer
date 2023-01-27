@@ -105,8 +105,10 @@ class WorkingPackage : AnAction() {
         val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
         val newFolder = VfsUtil.findFileByIoFile(File(newPath), true)
         for (file in oldFolder!!.children) {
-            WriteAction.run<IOException> {
-                file.move(this, newFolder!!)
+            if (file.path != newFolder!!.path) {
+                WriteAction.run<IOException> {
+                    file.move(this, newFolder!!)
+                }
             }
         }
         WriteAction.run<IOException> {
