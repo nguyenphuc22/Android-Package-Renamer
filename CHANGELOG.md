@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.0.7] - 2023-01-30
+
+### Added
+- Support DataBinding Library
+
 ## [0.0.6] - 2023-01-27
 
 ### Added
