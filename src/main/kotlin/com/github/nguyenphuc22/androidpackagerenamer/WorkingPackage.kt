@@ -1,5 +1,6 @@
 package com.github.nguyenphuc22.androidpackagerenamer
 
+import com.github.nguyenphuc22.androidpackagerenamer.objectMain.InfoProject
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.WriteAction
@@ -21,14 +22,18 @@ class WorkingPackage : AnAction() {
         e.presentation.isEnabled = project != null
     }
     override fun actionPerformed(e: AnActionEvent) {
+
         val oldPackageName = getPackageName(e.project!!)
 
         val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,MyValidator())
 
         if (newPackageName != null) {
+
+            val info = InfoProject(newPackageName,oldPackageName,getModeDatading(e.project!!))
+
             // Rename Android Manifest.xml
-            renameManifest(e.project!!,newPackageName,oldPackageName)
-            val newFolderName = newPackageName.replace(oldChar =  '.', newChar = '/')
+            renameManifest(e.project!!,info.packageNameNew,info.packageNameOld)
+            val newFolderName = info.packageNameNew.replace(oldChar =  '.', newChar = '/')
 //          Create new folder follow new packageName
             val vfs = VirtualFileManager.getInstance().getFileSystem("file")
 //          source
@@ -43,31 +48,38 @@ class WorkingPackage : AnAction() {
 
 //          Move all files in old folder to new folder
 //          Source
-            var oldPathFolder = e.project!!.basePath + "/app/src/main/java/" + oldPackageName.replace('.','/')
+            var oldPathFolder = e.project!!.basePath + "/app/src/main/java/" + info.packageNameOld.replace('.','/')
             var newPathFolder = e.project!!.basePath + "/app/src/main/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
 //          Rename each file
             var folder = vfs.findFileByPath(newPathFolder)
-            renameEachFile(folder!!,newPackageName,oldPackageName)
+            renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
 //          Android TestFolder
-            oldPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + oldPackageName.replace('.','/')
+            oldPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + info.packageNameOld.replace('.','/')
             newPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
 //          Rename each file
             folder = vfs.findFileByPath(newPathFolder)
-            renameEachFile(folder!!,newPackageName,oldPackageName)
+            renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
 //          TestFolder
-            oldPathFolder = e.project!!.basePath + "/app/src/test/java/" + oldPackageName.replace('.','/')
+            oldPathFolder = e.project!!.basePath + "/app/src/test/java/" + info.packageNameOld.replace('.','/')
             newPathFolder = e.project!!.basePath + "/app/src/test/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
 //          Rename each file
             folder = vfs.findFileByPath(newPathFolder)
-            renameEachFile(folder!!,newPackageName,oldPackageName)
+            renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
+
+            if (info.isDataBindingMode) {
+                newPathFolder = e.project!!.basePath + "/app/src/main/res/layout"
+                folder = vfs.findFileByPath(newPathFolder)
+                renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
+            }
+
 //          Rename applicationId in build.gradle
-            renameGradle(e.project!!,oldPackageName,newPackageName)
+            renameGradle(e.project!!,info.packageNameOld,info.packageNameNew)
 
             // Display Success
-            Messages.showInfoMessage("Your package ${newPackageName} \n Don't forget Sync Project with Gradle Files.","Rename Package Success")
+            Messages.showInfoMessage("Your package ${info.packageNameNew} \n Don't forget Sync Project with Gradle Files.","Rename Package Success")
         }
 
     }
@@ -153,5 +165,16 @@ class WorkingPackage : AnAction() {
                 }
             }
         }
+    }
+
+    fun getModeDatading(project: Project) : Boolean {
+        val vfs = VirtualFileManager.getInstance().getFileSystem("file")
+        val sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
+        if (sourceGradle != null) {
+            val dataGradle = FileDocumentManager.getInstance().getDocument(sourceGradle)!!.text
+            if (dataGradle.contains("dataBinding"))
+                return true
+        }
+        return false
     }
 }
