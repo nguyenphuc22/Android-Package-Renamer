@@ -1,5 +1,6 @@
 package com.github.nguyenphuc22.androidpackagerenamer
 
+import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ContentNotification
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.InfoProject
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -79,7 +80,7 @@ class WorkingPackage : AnAction() {
             renameGradle(e.project!!,info.packageNameOld,info.packageNameNew)
 
             // Display Success
-            Messages.showInfoMessage("Your package ${info.packageNameNew} \n Don't forget Sync Project with Gradle Files.","Rename Package Success")
+            Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
         }
 
     }
