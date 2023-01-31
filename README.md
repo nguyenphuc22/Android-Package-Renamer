@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/jetbrains/plugin/v/20919.svg)](https://plugins.jetbrains.com/plugin/20919)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/20919.svg)](https://plugins.jetbrains.com/plugin/20919)
 
-![Logo](https://github.com/nguyenphuc22/Android-Package-Renamer/Android_Package_Renamer.png)
+![Logo](https://github.com/nguyenphuc22/Android-Package-Renamer/blob/main/Android_Package_Renamer.png)
 
 <!-- Plugin description -->
 
