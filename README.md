@@ -40,9 +40,9 @@ To report a specific problem or feature request, open a new issue on Github. For
 
 ## Author
 
-[PhucVR](https://twitter.com/phuc_vr) on Twitter
+[PhucVR on Twitter](https://twitter.com/phuc_vr) 
 
-[PhucVR](https://github.com/nguyenphuc22) on [GitHub](https://github.com/nguyenphuc22?tab=repositories)
+[PhucVR on GitHub](https://github.com/nguyenphuc22)
 
 
 <!-- Plugin description end -->
