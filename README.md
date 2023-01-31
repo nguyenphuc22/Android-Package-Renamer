@@ -48,8 +48,12 @@ To report a specific problem or feature request, open a new issue on Github. For
 <!-- Plugin description end -->
 
 
+
 ## License
 
+Apache 2.0. See the [LICENSE](https://github.com/nguyenphuc22/Android-Package-Renamer/blob/main/LICENSE.md) file for details.
+
+---
 
 Plugin based on the [IntelliJ Platform Plugin Template][template].
 
