@@ -23,7 +23,6 @@ class WorkingPackage : AnAction() {
         e.presentation.isEnabled = project != null
     }
     override fun actionPerformed(e: AnActionEvent) {
-
         val oldPackageName = getPackageName(e.project!!)
 
         val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,MyValidator())
