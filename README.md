@@ -22,7 +22,6 @@ The Android Package Renamer plugin "Safe And Fast Android Rename" allows users t
   Download the [latest release](https://github.com/nguyenphuc22/Android-Package-Renamer/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
----
 
 ## Usage
 
@@ -32,14 +31,12 @@ The Android Package Renamer plugin "Safe And Fast Android Rename" allows users t
 4. Click **Ok**.
 5. **Sync Project with Gradle Files** or **Invalidate Caches**
 
----
 
 
 ## Report an issue with Android Package Renamer
 
 To report a specific problem or feature request, open a new issue on Github. For questions, suggestions, or anything else, email phucvr.opensource@gmai.com
 
----
 
 ## Author
 
@@ -47,14 +44,12 @@ To report a specific problem or feature request, open a new issue on Github. For
 
 [PhucVR](https://github.com/nguyenphuc22) on [GitHub](https://github.com/nguyenphuc22?tab=repositories)
 
----
 
 <!-- Plugin description end -->
 
 
 ## License
 
----
 
 Plugin based on the [IntelliJ Platform Plugin Template][template].
 
