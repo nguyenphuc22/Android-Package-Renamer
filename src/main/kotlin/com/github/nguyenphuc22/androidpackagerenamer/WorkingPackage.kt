@@ -70,9 +70,11 @@ class WorkingPackage : AnAction() {
             renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
 
             if (info.isDataBindingMode) {
-                newPathFolder = e.project!!.basePath + "/app/src/main/res/layout"
+                newPathFolder = e.project!!.basePath + "/app/src/main/res"
                 folder = vfs.findFileByPath(newPathFolder)
-                renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
+                folder?.let {
+                    renameEachFile(it,info.packageNameNew,info.packageNameOld)
+                }
             }
 
 //          Rename applicationId in build.gradle
@@ -142,11 +144,13 @@ class WorkingPackage : AnAction() {
             if (file.isDirectory) {
                 renameEachFile(file,newPackage,oldPackage)
             } else {
-                val data = FileDocumentManager.getInstance().getDocument(file)!!.text
-                if (data.contains(oldPackage)) {
-                    val replace = data.replace(oldPackage,newPackage)
-                    WriteAction.run<IOException> {
-                        VfsUtil.saveText(file, replace)
+                FileDocumentManager.getInstance().getDocument(file)?.let {
+                    val data = it.text
+                    if (data.contains(oldPackage)) {
+                        val replace = data.replace(oldPackage,newPackage)
+                        WriteAction.run<IOException> {
+                            VfsUtil.saveText(file, replace)
+                        }
                     }
                 }
             }
