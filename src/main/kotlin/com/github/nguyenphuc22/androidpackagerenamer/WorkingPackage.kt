@@ -106,12 +106,22 @@ class WorkingPackage : AnAction() {
 
     fun getPackageName(project: Project): String {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
-        val sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle")
-        if (sourceDir != null) {
-            val dataGradle = FileDocumentManager.getInstance().getDocument(sourceDir)!!.text
-            val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
-            return packageName
+        val manifest = vfs.findFileByPath(project.basePath + "/app/src/main/AndroidManifest.xml")
+        manifest?.let { manifestVir ->
+            val dataManifest = FileDocumentManager.getInstance().getDocument(manifestVir)!!.text
+            if (dataManifest.contains("package")) {
+                val packageName = dataManifest.substringAfter("package=").substringAfter("\"").substringBefore("\"")
+                return packageName
+            } else {
+                val sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle")
+                sourceDir?.let {
+                    val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
+                    val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
+                    return packageName
+                }
+            }
         }
+
         return "com.example.myapplication"
     }
 
