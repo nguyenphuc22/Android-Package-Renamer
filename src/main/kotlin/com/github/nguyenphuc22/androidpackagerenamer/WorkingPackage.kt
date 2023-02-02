@@ -80,6 +80,24 @@ class WorkingPackage : AnAction() {
 //          Rename applicationId in build.gradle
             renameGradle(e.project!!,info.packageNameOld,info.packageNameNew)
 
+            // Delete Build
+            val pathBuild = e.project!!.basePath + "/build"
+            val folderBuild = VfsUtil.findFileByIoFile(File(pathBuild), true)
+            folderBuild?.let {
+                it.delete(this)
+            }
+            // Delete app/build
+            val pathAppBuild = e.project!!.basePath + "/app/build"
+            val folderAppBuild = VfsUtil.findFileByIoFile(File(pathAppBuild), true)
+            folderAppBuild?.let {
+                it.delete(this)
+            }
+            // .gradle
+            val pathGradle = e.project!!.basePath + "/.gradle"
+            val folderGradle = VfsUtil.findFileByIoFile(File(pathGradle), true)
+            folderGradle?.let {
+                it.delete(this)
+            }
             // Display Success
             Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
         }
