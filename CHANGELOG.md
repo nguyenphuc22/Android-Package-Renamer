@@ -8,6 +8,9 @@
 
 ### Added
 - Support DataBinding multiple layout xml
+- Fix bug navigation component file xml
+- Fix bug package and application id different
+- Support Android Studio Arctic fox
 
 ## [0.0.7] - 2023-01-30
 
@@ -29,7 +32,8 @@
 ### Added
 - Function rename package android project.
 
-[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.5-alpha...v0.0.6
 [0.0.5]: https://github.com/nguyenphuc22/Android-Package-Renamer/commits/v0.0.5

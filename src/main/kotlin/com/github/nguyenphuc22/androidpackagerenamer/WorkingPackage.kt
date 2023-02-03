@@ -69,12 +69,10 @@ class WorkingPackage : AnAction() {
             folder = vfs.findFileByPath(newPathFolder)
             renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
 
-            if (info.isDataBindingMode) {
-                newPathFolder = e.project!!.basePath + "/app/src/main/res"
-                folder = vfs.findFileByPath(newPathFolder)
-                folder?.let {
-                    renameEachFile(it,info.packageNameNew,info.packageNameOld)
-                }
+            newPathFolder = e.project!!.basePath + "/app/src/main/res"
+            folder = vfs.findFileByPath(newPathFolder)
+            folder?.let {
+                renameEachFile(it,info.packageNameNew,info.packageNameOld)
             }
 
 //          Rename applicationId in build.gradle
@@ -190,8 +188,9 @@ class WorkingPackage : AnAction() {
         val sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
         if (sourceGradle != null) {
             val data = FileDocumentManager.getInstance().getDocument(sourceGradle)!!.text
-            if (data.contains(oldPackage)) {
-                val replace = data.replace(oldPackage,newPackage)
+            val applicationID = data.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
+            if (data.contains(applicationID)) {
+                val replace = data.replace(applicationID,newPackage)
                 WriteAction.run<IOException> {
                     VfsUtil.saveText(sourceGradle, replace)
                 }

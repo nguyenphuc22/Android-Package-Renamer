@@ -1,4 +1,4 @@
-# Android-Package-Renamer
+# Android Package Renamer
 
 ![Build](https://github.com/nguyenphuc22/Android-Package-Renamer/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/20919.svg)](https://plugins.jetbrains.com/plugin/20919)
@@ -14,14 +14,13 @@ The Android Package Renamer plugin "Safe And Fast Android Rename" allows users t
 
 - Using IDE built-in plugin system:
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Android-Package-Renamer"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Android Package Renamer"</kbd> >
   <kbd>Install Plugin</kbd>
 
 - Manually:
 
   Download the [latest release](https://github.com/nguyenphuc22/Android-Package-Renamer/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
 
 ## Usage
 
@@ -31,23 +30,24 @@ The Android Package Renamer plugin "Safe And Fast Android Rename" allows users t
 4. Click **Ok**.
 5. **Sync Project with Gradle Files** or **Invalidate Caches**
 
+## Working on project using
 
+### Gradle
+
+- :heavy_check_mark: Gradle Groovy
+- :x: Gradle Kotlin
 
 ## Report an issue with Android Package Renamer
 
 To report a specific problem or feature request, open a new issue on Github. For questions, suggestions, or anything else, email phucvr.opensource@gmai.com
 
-
 ## Author
 
-[PhucVR on Twitter](https://twitter.com/phuc_vr) 
+[PhucVR on Twitter](https://twitter.com/phuc_vr)
 
 [PhucVR on GitHub](https://github.com/nguyenphuc22)
 
-
 <!-- Plugin description end -->
-
-
 
 ## License
 
