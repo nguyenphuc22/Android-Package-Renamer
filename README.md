@@ -35,7 +35,7 @@ The Android Package Renamer plugin "Safe And Fast Android Rename" allows users t
 ### Gradle
 
 - :heavy_check_mark: Gradle Groovy
-- :x: Gradle Kotlin
+- :heavy_check_mark: Gradle Kotlin
 
 ## Report an issue with Android Package Renamer
 
