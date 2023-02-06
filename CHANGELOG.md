@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.0.8] - 2023-02-6
+
+### Added
+- Support Gradle KTS
+
 ## [0.0.8] - 2023-02-1
 
 ### Added

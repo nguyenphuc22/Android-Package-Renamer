@@ -111,7 +111,14 @@ class WorkingPackage : AnAction() {
                 val packageName = dataManifest.substringAfter("package=").substringAfter("\"").substringBefore("\"")
                 return packageName
             } else {
-                val sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle")
+                var sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle")
+                sourceDir?.let {
+                    val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
+                    val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
+                    return packageName
+                }
+
+                sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle.kts")
                 sourceDir?.let {
                     val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
                     val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
@@ -185,14 +192,17 @@ class WorkingPackage : AnAction() {
 
     fun renameGradle(project: Project, oldPackage: String, newPackage: String) {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
-        val sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
-        if (sourceGradle != null) {
-            val data = FileDocumentManager.getInstance().getDocument(sourceGradle)!!.text
+        var sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
+        if (sourceGradle == null) {
+            sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle.kts")
+        }
+        sourceGradle?.let {
+            val data = FileDocumentManager.getInstance().getDocument(it)!!.text
             val applicationID = data.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
             if (data.contains(applicationID)) {
                 val replace = data.replace(applicationID,newPackage)
                 WriteAction.run<IOException> {
-                    VfsUtil.saveText(sourceGradle, replace)
+                    VfsUtil.saveText(it, replace)
                 }
             }
         }
