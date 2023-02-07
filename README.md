@@ -12,7 +12,7 @@ The Android Package Renamer plugin "Safe And Fast Android Rename" allows users t
 
 ## What the plugin can do
 
-This plugin can rename package name android project:
+This plugin can rename packages in android project, here are a few specific cases (it can do more)::
 
 - com.android.example -> org.nickseven.product
 - com.android.example -> org.nickseven

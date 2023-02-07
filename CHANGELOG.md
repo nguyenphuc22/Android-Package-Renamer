@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.0.10] - 2023-02-7
+
+### Added
+- Added notification when package name is not found
+
 ## [0.0.9] - 2023-02-6
 
 ### Added
