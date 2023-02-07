@@ -10,6 +10,16 @@
 
 The Android Package Renamer plugin "Safe And Fast Android Rename" allows users to safely and quickly change the package name of an Android project. This plugin uses a series of automated refactoring steps to ensure that all references to the old package name are updated throughout the project, without breaking the code or causing errors.
 
+## What the plugin can do
+
+This plugin can rename package name android project:
+
+- com.android.example -> org.nickseven.product
+- com.android.example -> org.nickseven
+- com.android.example -> org.nickseven.product.native
+- com.android.etc.nick.d -> org.android.otd.nick.d
+- ....etc
+
 ## Installation
 
 - Using IDE built-in plugin system:
