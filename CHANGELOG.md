@@ -4,7 +4,7 @@
 
 ## [Unreleased]
 
-## [0.0.10] - 2023-02-7
+## [0.1.0] - 2023-02-7
 
 ### Added
 - Added notification when package name is not found
@@ -42,7 +42,9 @@
 ### Added
 - Function rename package android project.
 
-[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.8...HEAD
+[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.10...HEAD
+[0.0.10]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.9...v0.0.10
+[0.0.9]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.5-alpha...v0.0.6
