@@ -25,6 +25,11 @@ class WorkingPackage : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val oldPackageName = getPackageName(e.project!!)
 
+        if (oldPackageName == null) {
+            Messages.showInfoMessage(ContentNotification.CONTENT_GET_PACKAGE_NAME_FAIL,ContentNotification.GET_PACKAGE_NAME_FAIL)
+            return
+        }
+
         val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,MyValidator())
 
         if (newPackageName != null) {
@@ -102,7 +107,7 @@ class WorkingPackage : AnAction() {
 
     }
 
-    fun getPackageName(project: Project): String {
+    fun getPackageName(project: Project): String? {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
         val manifest = vfs.findFileByPath(project.basePath + "/app/src/main/AndroidManifest.xml")
         manifest?.let { manifestVir ->
@@ -114,20 +119,24 @@ class WorkingPackage : AnAction() {
                 var sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle")
                 sourceDir?.let {
                     val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
-                    val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
-                    return packageName
+                    if (dataGradle.contains("applicationId")) {
+                        val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
+                        return packageName
+                    }
                 }
 
                 sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle.kts")
                 sourceDir?.let {
                     val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
-                    val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
-                    return packageName
+                    if (dataGradle.contains("applicationId")) {
+                        val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
+                        return packageName
+                    }
                 }
             }
         }
 
-        return "com.example.myapplication"
+        return null
     }
 
     fun renameManifest(project: Project, newPackage: String, oldPackage: String) {
