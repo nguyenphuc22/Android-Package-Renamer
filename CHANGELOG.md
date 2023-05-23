@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2023-05-23
+
+### Added
+- Check null Folder
+
 ## [0.1.0] - 2023-02-7
 
 ### Added

@@ -19,7 +19,6 @@ class WorkingPackage : AnAction() {
     override fun update(e: AnActionEvent) {
         super.update(e)
         val project = e.project
-
         e.presentation.isEnabled = project != null
     }
     override fun actionPerformed(e: AnActionEvent) {
@@ -38,18 +37,27 @@ class WorkingPackage : AnAction() {
 
             // Rename Android Manifest.xml
             renameManifest(e.project!!,info.packageNameNew,info.packageNameOld)
+
             val newFolderName = info.packageNameNew.replace(oldChar =  '.', newChar = '/')
 //          Create new folder follow new packageName
             val vfs = VirtualFileManager.getInstance().getFileSystem("file")
 //          source
             val sourceDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/main/java")
-            VfsUtil.createDirectories(sourceDir!!.path + "/" + newFolderName)
+            sourceDir?.let {
+                VfsUtil.createDirectories(it.path + "/" + newFolderName)
+            }
+
 //          Android TestFolder
             val androidTestDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/androidTest/java")
-            VfsUtil.createDirectories(androidTestDir!!.path + "/" + newFolderName)
+            androidTestDir?.let {
+                VfsUtil.createDirectories(it.path + "/" + newFolderName)
+            }
+
 //          TestFolder
             val testDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/test/java")
-            VfsUtil.createDirectories(testDir!!.path + "/" + newFolderName)
+            testDir?.let {
+                VfsUtil.createDirectories(it.path + "/" + newFolderName)
+            }
 
 //          Move all files in old folder to new folder
 //          Source
@@ -58,21 +66,29 @@ class WorkingPackage : AnAction() {
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
 //          Rename each file
             var folder = vfs.findFileByPath(newPathFolder)
-            renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
+            folder?.let {
+                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+            }
+
 //          Android TestFolder
             oldPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + info.packageNameOld.replace('.','/')
             newPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
 //          Rename each file
             folder = vfs.findFileByPath(newPathFolder)
-            renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
+            folder?.let {
+                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+            }
+
 //          TestFolder
             oldPathFolder = e.project!!.basePath + "/app/src/test/java/" + info.packageNameOld.replace('.','/')
             newPathFolder = e.project!!.basePath + "/app/src/test/java/" + newFolderName
             moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
 //          Rename each file
             folder = vfs.findFileByPath(newPathFolder)
-            renameEachFile(folder!!,info.packageNameNew,info.packageNameOld)
+            folder?.let {
+                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+            }
 
             newPathFolder = e.project!!.basePath + "/app/src/main/res"
             folder = vfs.findFileByPath(newPathFolder)
@@ -160,10 +176,15 @@ class WorkingPackage : AnAction() {
     fun moveFilesOldToNewFolder(oldPath : String, newPath : String) {
         val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
         val newFolder = VfsUtil.findFileByIoFile(File(newPath), true)
-        for (file in oldFolder!!.children) {
-            if (file.path != newFolder!!.path) {
+        if (oldFolder == null)
+            return
+        if (newFolder == null)
+            return
+
+        for (file in oldFolder.children) {
+            if (file.path != newFolder.path) {
                 WriteAction.run<IOException> {
-                    file.move(this, newFolder!!)
+                    file.move(this, newFolder)
                 }
             }
         }
