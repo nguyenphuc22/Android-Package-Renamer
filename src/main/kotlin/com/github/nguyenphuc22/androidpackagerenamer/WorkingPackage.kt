@@ -35,9 +35,6 @@ class WorkingPackage : AnAction() {
 
             val info = InfoProject(newPackageName,oldPackageName,getModeDatading(e.project!!))
 
-            // Rename Android Manifest.xml
-            renameManifest(e.project!!,info.packageNameNew,info.packageNameOld)
-
             val newFolderName = info.packageNameNew.replace(oldChar =  '.', newChar = '/')
 //          Create new folder follow new packageName
             val vfs = VirtualFileManager.getInstance().getFileSystem("file")
