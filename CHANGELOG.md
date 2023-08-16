@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.1.2] - 2023-08-23
+
+### Added
+- Remove rename manifest.
+
 ## [0.1.1] - 2023-05-23
 
 ### Added
