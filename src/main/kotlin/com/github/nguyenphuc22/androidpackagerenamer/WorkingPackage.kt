@@ -2,6 +2,7 @@ package com.github.nguyenphuc22.androidpackagerenamer
 
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ContentNotification
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.InfoProject
+import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ManagerFile
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.WriteAction
@@ -31,92 +32,105 @@ class WorkingPackage : AnAction() {
 
         val newPackageName = Messages.showInputDialog(e.project,null,"Your Package Name",null,oldPackageName,MyValidator())
 
-        if (newPackageName != null) {
-
-            val info = InfoProject(newPackageName,oldPackageName,getModeDatading(e.project!!))
-
-            val newFolderName = info.packageNameNew.replace(oldChar =  '.', newChar = '/')
-//          Create new folder follow new packageName
-            val vfs = VirtualFileManager.getInstance().getFileSystem("file")
-//          source
-            val sourceDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/main/java")
-            sourceDir?.let {
-                VfsUtil.createDirectories(it.path + "/" + newFolderName)
-            }
-
-//          Android TestFolder
-            val androidTestDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/androidTest/java")
-            androidTestDir?.let {
-                VfsUtil.createDirectories(it.path + "/" + newFolderName)
-            }
-
-//          TestFolder
-            val testDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/test/java")
-            testDir?.let {
-                VfsUtil.createDirectories(it.path + "/" + newFolderName)
-            }
-
-//          Move all files in old folder to new folder
-//          Source
-            var oldPathFolder = e.project!!.basePath + "/app/src/main/java/" + info.packageNameOld.replace('.','/')
-            var newPathFolder = e.project!!.basePath + "/app/src/main/java/" + newFolderName
-            moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
-//          Rename each file
-            var folder = vfs.findFileByPath(newPathFolder)
-            folder?.let {
-                renameEachFile(it,info.packageNameNew,info.packageNameOld)
-            }
-
-//          Android TestFolder
-            oldPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + info.packageNameOld.replace('.','/')
-            newPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + newFolderName
-            moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
-//          Rename each file
-            folder = vfs.findFileByPath(newPathFolder)
-            folder?.let {
-                renameEachFile(it,info.packageNameNew,info.packageNameOld)
-            }
-
-//          TestFolder
-            oldPathFolder = e.project!!.basePath + "/app/src/test/java/" + info.packageNameOld.replace('.','/')
-            newPathFolder = e.project!!.basePath + "/app/src/test/java/" + newFolderName
-            moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
-//          Rename each file
-            folder = vfs.findFileByPath(newPathFolder)
-            folder?.let {
-                renameEachFile(it,info.packageNameNew,info.packageNameOld)
-            }
-
-            newPathFolder = e.project!!.basePath + "/app/src/main/res"
-            folder = vfs.findFileByPath(newPathFolder)
-            folder?.let {
-                renameEachFile(it,info.packageNameNew,info.packageNameOld)
-            }
-
-//          Rename applicationId in build.gradle
-            renameGradle(e.project!!,info.packageNameOld,info.packageNameNew)
-
-            // Delete Build
-            val pathBuild = e.project!!.basePath + "/build"
-            val folderBuild = VfsUtil.findFileByIoFile(File(pathBuild), true)
-            folderBuild?.let {
-                it.delete(this)
-            }
-            // Delete app/build
-            val pathAppBuild = e.project!!.basePath + "/app/build"
-            val folderAppBuild = VfsUtil.findFileByIoFile(File(pathAppBuild), true)
-            folderAppBuild?.let {
-                it.delete(this)
-            }
-            // .gradle
-            val pathGradle = e.project!!.basePath + "/.gradle"
-            val folderGradle = VfsUtil.findFileByIoFile(File(pathGradle), true)
-            folderGradle?.let {
-                it.delete(this)
-            }
-            // Display Success
-            Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
+        val manager = ManagerFile(e.project!!)
+        if (manager.validateNewPackageName(newPackageName!!)) {
+            manager.changePackageName(
+                newPackageName,
+                onSuccess =  {
+                    Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
+                },
+                onError =  {
+                    Messages.showInfoMessage(ContentNotification.CONTENT_GET_PACKAGE_NAME_FAIL,ContentNotification.FAIL)
+                }
+            )
         }
+
+//        if (newPackageName != null) {
+//
+//            val info = InfoProject(newPackageName,oldPackageName,getModeDatading(e.project!!))
+//
+//            val newFolderName = info.packageNameNew.replace(oldChar =  '.', newChar = '/')
+////          Create new folder follow new packageName
+//            val vfs = VirtualFileManager.getInstance().getFileSystem("file")
+////          source
+//            val sourceDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/main/java")
+//            sourceDir?.let {
+//                VfsUtil.createDirectories(it.path + "/" + newFolderName)
+//            }
+//
+////          Android TestFolder
+//            val androidTestDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/androidTest/java")
+//            androidTestDir?.let {
+//                VfsUtil.createDirectories(it.path + "/" + newFolderName)
+//            }
+//
+////          TestFolder
+//            val testDir = vfs.findFileByPath(e.project!!.basePath + "/app/src/test/java")
+//            testDir?.let {
+//                VfsUtil.createDirectories(it.path + "/" + newFolderName)
+//            }
+//
+////          Move all files in old folder to new folder
+////          Source
+//            var oldPathFolder = e.project!!.basePath + "/app/src/main/java/" + info.packageNameOld.replace('.','/')
+//            var newPathFolder = e.project!!.basePath + "/app/src/main/java/" + newFolderName
+//            moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
+////          Rename each file
+//            var folder = vfs.findFileByPath(newPathFolder)
+//            folder?.let {
+//                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+//            }
+//
+////          Android TestFolder
+//            oldPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + info.packageNameOld.replace('.','/')
+//            newPathFolder = e.project!!.basePath + "/app/src/androidTest/java/" + newFolderName
+//            moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
+////          Rename each file
+//            folder = vfs.findFileByPath(newPathFolder)
+//            folder?.let {
+//                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+//            }
+//
+////          TestFolder
+//            oldPathFolder = e.project!!.basePath + "/app/src/test/java/" + info.packageNameOld.replace('.','/')
+//            newPathFolder = e.project!!.basePath + "/app/src/test/java/" + newFolderName
+//            moveFilesOldToNewFolder(oldPathFolder,newPathFolder)
+////          Rename each file
+//            folder = vfs.findFileByPath(newPathFolder)
+//            folder?.let {
+//                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+//            }
+//
+//            newPathFolder = e.project!!.basePath + "/app/src/main/res"
+//            folder = vfs.findFileByPath(newPathFolder)
+//            folder?.let {
+//                renameEachFile(it,info.packageNameNew,info.packageNameOld)
+//            }
+//
+////          Rename applicationId in build.gradle
+//            renameGradle(e.project!!,info.packageNameOld,info.packageNameNew)
+//
+//            // Delete Build
+//            val pathBuild = e.project!!.basePath + "/build"
+//            val folderBuild = VfsUtil.findFileByIoFile(File(pathBuild), true)
+//            folderBuild?.let {
+//                it.delete(this)
+//            }
+//            // Delete app/build
+//            val pathAppBuild = e.project!!.basePath + "/app/build"
+//            val folderAppBuild = VfsUtil.findFileByIoFile(File(pathAppBuild), true)
+//            folderAppBuild?.let {
+//                it.delete(this)
+//            }
+//            // .gradle
+//            val pathGradle = e.project!!.basePath + "/.gradle"
+//            val folderGradle = VfsUtil.findFileByIoFile(File(pathGradle), true)
+//            folderGradle?.let {
+//                it.delete(this)
+//            }
+//            // Display Success
+//            Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
+//        }
 
     }
 
