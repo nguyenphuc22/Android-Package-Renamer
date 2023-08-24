@@ -63,7 +63,7 @@ class ManagerFile(private val project: Project) {
         // thay đổi package name
         val oldName = getCurrentPackageName()
         if (oldName != null) {
-            val info = InfoProject(newName,oldName,getModeDatading(project!!))
+            val info = InfoProject(newName,oldName,getModeData(project!!))
 
             val newFolderName = info.packageNameNew.replace(oldChar =  '.', newChar = '/')
 //          Create new folder follow new packageName
@@ -126,6 +126,8 @@ class ManagerFile(private val project: Project) {
 //          Rename applicationId in build.gradle
             renameGradle(project!!,info.packageNameOld,info.packageNameNew)
 
+            addNamespaceIfNotExist(info.packageNameNew)
+
             // Delete Build
             val pathBuild = project!!.basePath + "/build"
             val folderBuild = VfsUtil.findFileByIoFile(File(pathBuild), true)
@@ -169,7 +171,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
-    fun moveFilesOldToNewFolder(oldPath : String, newPath : String) {
+    private fun moveFilesOldToNewFolder(oldPath : String, newPath : String) {
         val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
         val newFolder = VfsUtil.findFileByIoFile(File(newPath), true)
         if (oldFolder == null)
@@ -189,7 +191,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
-    fun deleteOldFolder(oldFolder: VirtualFile) {
+    private fun deleteOldFolder(oldFolder: VirtualFile) {
         if (oldFolder.children.isEmpty()) {
             val parent = oldFolder.parent
             oldFolder.delete(this)
@@ -197,7 +199,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
-    fun renameEachFile(virtualFile: VirtualFile, newPackage: String, oldPackage: String) {
+    private fun renameEachFile(virtualFile: VirtualFile, newPackage: String, oldPackage: String) {
         val root = VfsUtil.getChildren(virtualFile)
         for (file in root) {
             if (file.isDirectory) {
@@ -216,7 +218,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
-    fun renameGradle(project: Project, oldPackage: String, newPackage: String) {
+    private fun renameGradle(project: Project, oldPackage: String, newPackage: String) {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
         var sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
         if (sourceGradle == null) {
@@ -234,7 +236,41 @@ class ManagerFile(private val project: Project) {
         }
     }
 
-    fun getModeDatading(project: Project) : Boolean {
+    fun addNamespaceIfNotExist(newPackageName: String) {
+
+        val vfs = VirtualFileManager.getInstance().getFileSystem("file")
+
+        // Kiểm tra build.gradle
+        var buildGradle = vfs.findFileByPath("${project.basePath}/app/build.gradle")
+
+        if (buildGradle != null) {
+            val content = FileDocumentManager.getInstance().getDocument(buildGradle)!!.text
+
+            // Nếu không chứa namespace
+            if (!content.contains("namespace")) {
+                // Tìm vị trí mở đầu của thẻ android {
+                val androidIndex = content.indexOf("android {")
+                if (androidIndex != -1) {
+
+                    val builder = StringBuilder(content)
+                    builder.insert(content.indexOf("android {") + "android {".length,"\n \tnamespace '${newPackageName}'")
+
+                    WriteAction.run<IOException> {
+                        VfsUtil.saveText(buildGradle, builder.toString())
+                    }
+                }
+
+            }
+
+        } else {
+            // Kiểm tra file build.gradle.kts
+            // Thực hiện tương tự
+
+        }
+
+    }
+
+    private fun getModeData(project: Project) : Boolean {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
         val sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
         if (sourceGradle != null) {
