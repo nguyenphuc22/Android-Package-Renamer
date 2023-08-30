@@ -237,11 +237,16 @@ class ManagerFile(private val project: Project) {
     }
 
     fun addNamespaceIfNotExist(newPackageName: String) {
-
+        var gradleKotlin = false
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
 
         // Kiểm tra build.gradle
         var buildGradle = vfs.findFileByPath("${project.basePath}/app/build.gradle")
+
+        if (buildGradle == null) {
+            buildGradle = vfs.findFileByPath("${project.basePath}/app/build.gradle.kts")
+            gradleKotlin = true
+        }
 
         if (buildGradle != null) {
             val content = FileDocumentManager.getInstance().getDocument(buildGradle)!!.text
@@ -253,7 +258,11 @@ class ManagerFile(private val project: Project) {
                 if (androidIndex != -1) {
 
                     val builder = StringBuilder(content)
-                    builder.insert(content.indexOf("android {") + "android {".length,"\n \tnamespace '${newPackageName}'")
+                    if (gradleKotlin) {
+                        builder.insert(content.indexOf("android {") + "android {".length,"\n \tnamespace = \"${newPackageName}\"")
+                    } else {
+                        builder.insert(content.indexOf("android {") + "android {".length,"\n \tnamespace '${newPackageName}'")
+                    }
 
                     WriteAction.run<IOException> {
                         VfsUtil.saveText(buildGradle, builder.toString())
