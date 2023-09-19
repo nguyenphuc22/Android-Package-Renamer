@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.1.3] - 2023-09-19
+
+### Added
+- Add namespace when it not exits.
+
 ## [0.1.2] - 2023-08-23
 
 ### Added
