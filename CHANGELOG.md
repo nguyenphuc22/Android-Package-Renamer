@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [0.1.4] - 2024-02-10
+
+### Added
+
+- Update version support plugin
+
 ## [0.1.3] - 2023-09-19
 
 ### Added
