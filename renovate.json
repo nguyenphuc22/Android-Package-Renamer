@@ -1,26 +1,7 @@
+
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "gradle": {
-    "enabled": true
-  },
-  "packageRules": [
-    {
-      "matchFiles": ["gradle.properties"],
-      "matchPackageNames": ["pluginUntilBuild"],
-      "datasourceTemplate": "maven",
-      "depNameTemplate": "com.jetbrains.intellij.idea:ideaIC",
-      "versionScheme": "regex:^(?<major>\\d+)\\.(?<minor>\\d+).*",
-      "registryUrls": ["https://cache-redirector.jetbrains.com/intellij-repository"]
-    },
-    {
-      "matchFiles": ["gradle.properties"],
-      "matchPackageNames": ["platformVersion"],
-      "datasourceTemplate": "maven",
-      "depNameTemplate": "com.jetbrains.intellij.idea:ideaIC",
-      "versionScheme": "regex:^(?<major>\\d+)\\.(?<minor>\\d+).*",
-      "registryUrls": ["https://cache-redirector.jetbrains.com/intellij-repository"]
-    }
-  ],
-  "schedule": ["every weekend"]
+  "extends": [
+    "config:recommended"
+  ]
 }
