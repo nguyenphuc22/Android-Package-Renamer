@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "repositories": [
+    {
+      "name": "Android-Package-Renamer",
+      "description": "Android Package Renamer helps you change the android project package name safely and fast."
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "^org.jetbrains.intellij$",
+        "^org.jetbrains.kotlin$"
+      ],
+      "groupName": "JetBrains Dependencies",
+      "automerge": true,
+      "automergeType": "branch",
+      "platformAutomerge": true
+    },
+    {
+      "matchPackagePatterns": [
+        "^com.android.tools.build:gradle$"
+      ],
+      "groupName": "Android Gradle Plugin"
+    },
+    {
+      "matchDepTypes": [
+        "plugin",
+        "plugin-dependency"
+      ],
+      "enabled": true,
+      "semanticCommitType": "build",
+      "semanticCommitScope": "deps"
+    }
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "schedule": [
+    "after 9pm and before 5am on every weekday"
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard for Android-package-renamer"
+}
