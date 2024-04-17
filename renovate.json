@@ -9,6 +9,7 @@
   "packageRules": [
     {
       "matchFiles": ["gradle.properties"],
+      "labels": ["Update-Version-Support-IDE"]
       "matchPackageNames": ["pluginSinceBuild", "pluginUntilBuild"],
       "automerge": true,
       "major": {
