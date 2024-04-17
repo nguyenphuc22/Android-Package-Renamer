@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "gradle": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchFiles": ["gradle.properties"],
+      "labels": ["Update-Version-Support-IDE"],
+      "matchPackageNames": ["pluginSinceBuild", "pluginUntilBuild"],
+      "automerge": true,
+      "major": {
+        "automerge": false
+      }
+    }
+  ]
+}
