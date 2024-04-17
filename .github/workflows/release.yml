@@ -47,7 +47,6 @@ jobs:
 
           echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
 
-      # Install Gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
