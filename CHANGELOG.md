@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+## [0.1.5] - 2024-04-17
+- Update version support plugin
+
 ## [0.1.4] - 2024-02-10
 
 ### Added
@@ -87,6 +90,32 @@
 [0.0.5-alpha]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.5...v0.0.5-alpha
 
 [Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.4...HEAD
+
+[0.1.4]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.3...v0.1.4
+
+[0.1.3]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.2...v0.1.3
+
+[0.1.2]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.1...v0.1.2
+
+[0.1.1]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.0...v0.1.1
+
+[0.1.0]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.9...v0.1.0
+
+[0.0.9]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.8...v0.0.9
+
+[0.0.8]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.7...v0.0.8
+
+[0.0.7]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.6...v0.0.7
+
+[0.0.6]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.5-alpha...v0.0.6
+
+[0.0.5]: https://github.com/nguyenphuc22/Android-Package-Renamer/commits/v0.0.5
+
+[0.0.5-alpha]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.0.5...v0.0.5-alpha
+
+[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.5...HEAD
+
+[0.1.5]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.4...v0.1.5
 
 [0.1.4]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.3...v0.1.4
 
