@@ -1,7 +1,22 @@
-
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["platformVersion"],
+      "datasource": "maven",
+      "depNameTemplate": "com.jetbrains.intellij.idea:ideaIC",
+      "versioning": "loose"
+    },
+    {
+      "matchPackageNames": ["pluginUntilBuild"],
+      "datasource": "maven",
+      "depNameTemplate": "com.jetbrains.intellij.idea:ideaIC",
+      "versioning": "loose",
+      "extractVersion": "^(?<version>\\d+)\\.",
+      "targetAtVersion": "version"
+    }
   ]
 }
