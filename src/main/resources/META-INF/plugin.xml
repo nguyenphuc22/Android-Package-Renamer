@@ -24,7 +24,7 @@
     <actions>
         <group id="RenamePackageTools" text="RenamePackageTools">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
-            <action id="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage.RenamePackagei"
+            <action id="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage.RenamePackageiTools"
                     class="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage"
                     text="Rename Package"
                     description="Rename package safe and fast"
