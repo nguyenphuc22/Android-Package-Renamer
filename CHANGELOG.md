@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.1.6] - 2024-06-12
+- Update version support plugin
+- New Action in Tools Menu
+
 ## [0.1.5] - 2024-04-17
 - Update version support plugin
 

@@ -21,4 +21,15 @@
         </group>
     </actions>
 
+    <actions>
+        <group id="RenamePackageTools" text="RenamePackageTools">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage.RenamePackagei"
+                    class="com.github.nguyenphuc22.androidpackagerenamer.WorkingPackage"
+                    text="Rename Package"
+                    description="Rename package safe and fast"
+            />
+        </group>
+    </actions>
+
 </idea-plugin>
