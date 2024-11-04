@@ -37,9 +37,11 @@ class WorkingPackage : AnAction() {
             manager.changePackageName(
                 newPackageName,
                 onSuccess =  {
+                    println("Success")
                     Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
                 },
                 onError =  {
+                    println("Fail")
                     Messages.showInfoMessage(ContentNotification.CONTENT_GET_PACKAGE_NAME_FAIL,ContentNotification.FAIL)
                 }
             )

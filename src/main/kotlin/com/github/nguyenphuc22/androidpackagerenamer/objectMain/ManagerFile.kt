@@ -131,21 +131,22 @@ class ManagerFile(private val project: Project) {
             // Delete Build
             val pathBuild = project!!.basePath + "/build"
             val folderBuild = VfsUtil.findFileByIoFile(File(pathBuild), true)
-            folderBuild?.let {
-                it.delete(this)
+            WriteAction.runAndWait<IOException> {
+                folderBuild?.delete(this)
             }
             // Delete app/build
             val pathAppBuild = project!!.basePath + "/app/build"
             val folderAppBuild = VfsUtil.findFileByIoFile(File(pathAppBuild), true)
-            folderAppBuild?.let {
-                it.delete(this)
+            WriteAction.runAndWait<IOException> {
+                folderAppBuild?.delete(this)
             }
             // .gradle
             val pathGradle = project!!.basePath + "/.gradle"
             val folderGradle = VfsUtil.findFileByIoFile(File(pathGradle), true)
-            folderGradle?.let {
-                it.delete(this)
+            WriteAction.runAndWait<IOException> {
+                folderGradle?.delete(this)
             }
+
 
             onSuccess.invoke()
         } else {
@@ -171,23 +172,18 @@ class ManagerFile(private val project: Project) {
         }
     }
 
-    private fun moveFilesOldToNewFolder(oldPath : String, newPath : String) {
-        val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
-        val newFolder = VfsUtil.findFileByIoFile(File(newPath), true)
-        if (oldFolder == null)
-            return
-        if (newFolder == null)
-            return
-
-        for (file in oldFolder.children) {
-            if (file.path != newFolder.path) {
-                WriteAction.run<IOException> {
-                    file.move(this, newFolder)
+    private fun moveFilesOldToNewFolder(oldPath: String, newPath: String) {
+        WriteAction.runAndWait<IOException> {
+            val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
+            val newFolder = VfsUtil.findFileByIoFile(File(newPath), true)
+            if (oldFolder != null && newFolder != null) {
+                for (file in oldFolder.children) {
+                    if (file.path != newFolder.path) {
+                        file.move(this, newFolder)
+                    }
                 }
+                deleteOldFolder(oldFolder)
             }
-        }
-        WriteAction.run<IOException> {
-            deleteOldFolder(oldFolder)
         }
     }
 
@@ -200,16 +196,16 @@ class ManagerFile(private val project: Project) {
     }
 
     private fun renameEachFile(virtualFile: VirtualFile, newPackage: String, oldPackage: String) {
-        val root = VfsUtil.getChildren(virtualFile)
-        for (file in root) {
-            if (file.isDirectory) {
-                renameEachFile(file,newPackage,oldPackage)
-            } else {
-                FileDocumentManager.getInstance().getDocument(file)?.let {
-                    val data = it.text
-                    if (data.contains(oldPackage)) {
-                        val replace = data.replace(oldPackage,newPackage)
-                        WriteAction.run<IOException> {
+        WriteAction.runAndWait<IOException> {
+            val root = VfsUtil.getChildren(virtualFile)
+            for (file in root) {
+                if (file.isDirectory) {
+                    renameEachFile(file, newPackage, oldPackage)
+                } else {
+                    FileDocumentManager.getInstance().getDocument(file)?.let {
+                        val data = it.text
+                        if (data.contains(oldPackage)) {
+                            val replace = data.replace(oldPackage, newPackage)
                             VfsUtil.saveText(file, replace)
                         }
                     }
