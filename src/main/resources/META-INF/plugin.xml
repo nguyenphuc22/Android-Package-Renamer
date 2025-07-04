@@ -5,6 +5,7 @@
     <vendor email="nguyenphuc220100@gmail.com" url="https://github.com/nguyenphuc22/Android-Package-Renamer">PhucVR</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <projectService serviceImplementation="com.github.nguyenphuc22.androidpackagerenamer.services.MyProjectService  "/>

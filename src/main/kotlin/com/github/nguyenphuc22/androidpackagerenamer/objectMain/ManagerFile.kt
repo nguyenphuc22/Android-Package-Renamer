@@ -58,6 +58,7 @@ class ManagerFile(private val project: Project) {
         return name.isNotEmpty() && name.isNotBlank() && name.matches(Regex(pattern))
     }
 
+    @Deprecated("Use PsiRefactor.renamePackageWithPSI instead for safer refactoring", ReplaceWith("PsiRefactor.renamePackageWithPSI(project, oldPackageName, newPackageName, onSuccess, onError)"))
     fun changePackageName(newName: String, onSuccess : () -> Unit, onError : () -> Unit) {
         // Gọi các hàm khác trong file để thực hiện
         // thay đổi package name
@@ -154,6 +155,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
+    @Deprecated("This method is handled automatically by PSI refactoring")
     fun renameManifest(project: Project, newPackage: String, oldPackage: String) {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
         val sourceDir = vfs.findFileByPath(project.basePath + "/app/src/main/AndroidManifest.xml")
@@ -172,6 +174,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
+    @Deprecated("This method is handled automatically by PSI refactoring")
     private fun moveFilesOldToNewFolder(oldPath: String, newPath: String) {
         WriteAction.runAndWait<IOException> {
             val oldFolder = VfsUtil.findFileByIoFile(File(oldPath), true)
@@ -187,6 +190,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
+    @Deprecated("This method is handled automatically by PSI refactoring")
     private fun deleteOldFolder(oldFolder: VirtualFile) {
         if (oldFolder.children.isEmpty()) {
             val parent = oldFolder.parent
@@ -195,6 +199,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
+    @Deprecated("This method is handled automatically by PSI refactoring")
     private fun renameEachFile(virtualFile: VirtualFile, newPackage: String, oldPackage: String) {
         WriteAction.runAndWait<IOException> {
             val root = VfsUtil.getChildren(virtualFile)
@@ -214,6 +219,7 @@ class ManagerFile(private val project: Project) {
         }
     }
 
+    @Deprecated("This method is handled automatically by PSI refactoring")
     private fun renameGradle(project: Project, oldPackage: String, newPackage: String) {
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
         var sourceGradle = vfs.findFileByPath(project.basePath + "/app/build.gradle")
