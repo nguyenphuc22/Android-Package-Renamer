@@ -3,6 +3,7 @@ package com.github.nguyenphuc22.androidpackagerenamer
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ContentNotification
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.InfoProject
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ManagerFile
+import com.github.nguyenphuc22.androidpackagerenamer.refactor.PsiRefactor
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.WriteAction
@@ -34,15 +35,18 @@ class WorkingPackage : AnAction() {
 
         val manager = ManagerFile(e.project!!)
         if (manager.validateNewPackageName(newPackageName!!)) {
-            manager.changePackageName(
+            // Use PSI-based refactoring instead of manual approach
+            PsiRefactor.renamePackageWithPSI(
+                e.project!!,
+                oldPackageName,
                 newPackageName,
-                onSuccess =  {
+                onSuccess = {
                     println("Success")
-                    Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS,ContentNotification.SUCCESS)
+                    Messages.showInfoMessage(ContentNotification.CONTENT_SUCCESS, ContentNotification.SUCCESS)
                 },
-                onError =  {
-                    println("Fail")
-                    Messages.showInfoMessage(ContentNotification.CONTENT_GET_PACKAGE_NAME_FAIL,ContentNotification.FAIL)
+                onError = { errorMessage ->
+                    println("Fail: $errorMessage")
+                    Messages.showInfoMessage(errorMessage, ContentNotification.FAIL)
                 }
             )
         }

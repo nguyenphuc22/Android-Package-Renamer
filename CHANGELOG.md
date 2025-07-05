@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-07-05
+
+### Added
+- Comprehensive test suite with 11 test files covering core functionality
+- PSI-based package refactoring with Android fallback support
+- Improved error handling and validation
+
+### Changed
+- Enhanced code quality by removing deprecated functions
+- Improved project structure and maintainability
+- Updated to stable 1.0.0 release marking production readiness
+
+### Fixed
+- Resolved import issues and compilation errors
+- Fixed IOException import in ManagerFile.kt
+
 ## [0.1.8] - 2024-06-20
 
 - Update plugin to support latest JetBrains IDE versions.
