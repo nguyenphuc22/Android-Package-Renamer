@@ -26,6 +26,15 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    testImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+}
+
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
     jvmToolchain(17)
@@ -56,11 +65,45 @@ qodana {
 }
 
 // Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
-kover.xmlReport {
-    onCheck.set(true)
+kover {
+    xmlReport {
+        onCheck.set(true)
+    }
+    htmlReport {
+        onCheck.set(true)
+    }
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+        finalizedBy("koverReport")
+    }
+    
+    // Add coverage verification task
+    register("verifyCoverage") {
+        dependsOn("koverReport")
+        doLast {
+            val report = file("build/reports/kover/html/index.html")
+            if (report.exists()) {
+                val content = report.readText()
+                
+                // Extract class coverage percentage
+                val classRegex = Regex("""<span class="percent">\s*(\d+\.?\d*)%\s*</span>\s*<span class="absValue">\s*\(\d+/\d+\)\s*</span>\s*</td>\s*<td class="coverageStat">""")
+                val classMatch = classRegex.find(content)
+                val classCoverage = classMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
+                
+                println("Current class coverage: $classCoverage%")
+                
+                if (classCoverage < 80.0) {
+                    throw GradleException("Class coverage $classCoverage% is below minimum threshold of 80%")
+                }
+                
+                println("✅ Coverage verification passed!")
+            }
+        }
+    }
+    
     wrapper {
         gradleVersion = properties("gradleVersion")
     }
