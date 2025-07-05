@@ -27,9 +27,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.13.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.13.3")
     testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
