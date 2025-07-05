@@ -151,6 +151,11 @@ tasks {
         certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
         privateKey.set(System.getenv("PRIVATE_KEY"))
         password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        
+        // Skip signing if credentials are not available
+        enabled = !System.getenv("CERTIFICATE_CHAIN").isNullOrEmpty() && 
+                  !System.getenv("PRIVATE_KEY").isNullOrEmpty() && 
+                  !System.getenv("PRIVATE_KEY_PASSWORD").isNullOrEmpty()
     }
 
     publishPlugin {
