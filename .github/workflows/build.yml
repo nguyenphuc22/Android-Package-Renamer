@@ -47,6 +47,9 @@ jobs:
       # Validate wrapper
       - name: Gradle Wrapper Validation
         uses: gradle/wrapper-validation-action@v3.5.0
+        with:
+          retry-attempts: 3
+          retry-delay: 10
 
       # Setup Java 11 environment for the next steps
       - name: Setup Java
