@@ -7,16 +7,19 @@
 ## [1.0.0] - 2025-07-05
 
 ### Added
+
 - Comprehensive test suite with 11 test files covering core functionality
 - PSI-based package refactoring with Android fallback support
 - Improved error handling and validation
 
 ### Changed
+
 - Enhanced code quality by removing deprecated functions
 - Improved project structure and maintainability
 - Updated to stable 1.0.0 release marking production readiness
 
 ### Fixed
+
 - Resolved import issues and compilation errors
 - Fixed IOException import in ManagerFile.kt
 
@@ -107,7 +110,8 @@
 
 - Function rename package android project.
 
-[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.8...HEAD
+[Unreleased]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.8...v1.0.0
 [0.1.8]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/nguyenphuc22/Android-Package-Renamer/compare/v0.1.5...v0.1.6
