@@ -1,16 +1,13 @@
 # GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
 # - validate Gradle Wrapper,
 # - run 'test' and 'verifyPlugin' tasks,
-# - run Qodana inspections,
 # - run 'buildPlugin' task and prepare artifact for the further tests,
-# - run 'runPluginVerifier' task,
+# - run 'verifyPlugin' task,
 # - create a draft release.
 #
 # Workflow is triggered on push and pull_request events.
 #
 # GitHub Actions reference: https://help.github.com/en/actions
-#
-## JBIJPPTPL
 
 name: Build
 on:
@@ -23,7 +20,7 @@ on:
 jobs:
 
   # Run Gradle Wrapper Validation Action to verify the wrapper's checksum
-  # Run verifyPlugin, IntelliJ Plugin Verifier, and test Gradle tasks
+  # Run verifyPlugin and test Gradle tasks
   # Build plugin and provide the artifact for the next workflow jobs
   build:
     name: Build
@@ -51,12 +48,12 @@ jobs:
           retry-attempts: 3
           retry-delay: 10
 
-      # Setup Java 11 environment for the next steps
+      # Setup Java 21 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: 11
+          java-version: 21
 
       # Install Gradle
       - name: Grant execute permission for gradlew
@@ -74,14 +71,10 @@ jobs:
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "name=$NAME" >> $GITHUB_OUTPUT
-          echo "pluginVerifierHomeDir=~/.pluginVerifier" >> $GITHUB_OUTPUT
-          
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
-          ./gradlew listProductsReleases # prepare list of IDEs for Plugin Verifier
-          
 
       # Run tests
       - name: Run Tests
@@ -101,16 +94,9 @@ jobs:
         with:
           files: ${{ github.workspace }}/build/reports/kover/xml/report.xml
 
-      # Cache Plugin Verifier IDEs
-      - name: Setup Plugin Verifier IDEs Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.properties.outputs.pluginVerifierHomeDir }}/ides
-          key: plugin-verifier-${{ hashFiles('build/listProductsReleases.txt') }}
-
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
-        run: ./gradlew runPluginVerifier -Pplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
+        run: ./gradlew verifyPlugin
 
       # Collect Plugin Verifier Result
       - name: Collect Plugin Verifier Result
@@ -119,10 +105,6 @@ jobs:
         with:
           name: pluginVerifier-result
           path: ${{ github.workspace }}/build/reports/pluginVerifier
-
-      # Run Qodana inspections
-#      - name: Qodana - Code Inspection
-#        uses: JetBrains/qodana-action@v2023.2.0
 
       # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact

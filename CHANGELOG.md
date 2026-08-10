@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- Support for the latest JetBrains IDEs up to build 262 (IntelliJ IDEA 2026.2, Android Studio 2026.1.3)
+- Plugin Verifier checks against the latest IntelliJ IDEA and Android Studio releases
+
+### Changed
+
+- Migrated from the deprecated Gradle IntelliJ Plugin (1.x) to the IntelliJ Platform Gradle Plugin (2.18.1)
+- Updated build toolchain: Gradle 9.7, Kotlin 2.3.21, Java 21 in CI, Gradle Changelog Plugin 2.5.0, Kover 0.9.9
+- Removed the deprecated Gradle Qodana Plugin
+
+### Fixed
+
+- Plugin not loading in IntelliJ IDEA 2025.2+ and Android Studio Narwhal 4+ due to the outdated `until-build` range
+
 ## [1.0.0] - 2025-07-05
 
 ### Added
