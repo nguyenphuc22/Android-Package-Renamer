@@ -55,6 +55,11 @@ jobs:
           distribution: zulu
           java-version: 21
 
+      # Setup Gradle and cache the Gradle distribution, dependencies and build cache
+      # (speeds up subsequent runs, including the large Plugin Verifier IDE downloads)
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
       # Install Gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -88,11 +93,16 @@ jobs:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
 
-      # Upload Kover report to CodeCov
+      # Upload Kover reports to CodeCov (plugin module + core module).
+      # The action requires a CODECOV_TOKEN secret which is not configured in this repo,
+      # so a missing/failed upload must not fail the build.
       - name: Upload Code Coverage Report
+        continue-on-error: true
         uses: codecov/codecov-action@v5
         with:
-          files: ${{ github.workspace }}/build/reports/kover/xml/report.xml
+          files: |
+            ${{ github.workspace }}/build/reports/kover/xml/report.xml
+            ${{ github.workspace }}/core/build/reports/kover/xml/report.xml
 
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
@@ -123,6 +133,66 @@ jobs:
         with:
           name: ${{ steps.artifact.outputs.filename }}
           path: ./build/distributions/content/*/*
+
+  # Build and test the IDE-independent core module, build its CLI distribution,
+  # and run an end-to-end smoke test of the CLI against a real Android project fixture.
+  core:
+    name: Core
+    runs-on: ubuntu-latest
+    steps:
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+
+      # Setup Java 21 environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 21
+
+      # Setup Gradle and cache the Gradle distribution, dependencies and build cache
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Install Gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Run core unit + integration tests (fast, pure JVM)
+      - name: Run Core Tests
+        run: ./gradlew :core:test
+
+      # Build the CLI distribution
+      - name: Build CLI Distribution
+        run: ./gradlew :core:installDist
+
+      # End-to-end smoke test: rename a real fixture project with the CLI and verify the result
+      - name: Run CLI End-to-End Test
+        run: |
+          FIXTURE="core/src/test/resources/fixtures/manifest-groovy-java"
+          WORKDIR=$(mktemp -d)
+          cp -r "$FIXTURE" "$WORKDIR/project"
+
+          core/build/install/package-renamer-core/bin/package-renamer-core \
+            --project-dir "$WORKDIR/project" \
+            --new-package com.example.newname
+
+          # Verify sources were moved and rewritten
+          test -f "$WORKDIR/project/app/src/main/java/com/example/newname/MainActivity.java"
+          test ! -e "$WORKDIR/project/app/src/main/java/com/example/oldname"
+          grep -q "package com.example.newname" "$WORKDIR/project/app/src/main/java/com/example/newname/MainActivity.java"
+
+          # Verify manifest and build.gradle were updated
+          grep -q 'package="com.example.newname"' "$WORKDIR/project/app/src/main/AndroidManifest.xml"
+          grep -q 'applicationId "com.example.newname"' "$WORKDIR/project/app/build.gradle"
+
+          # Verify build directories were cleaned
+          test ! -e "$WORKDIR/project/build"
+          test ! -e "$WORKDIR/project/app/build"
+
+          rm -rf "$WORKDIR"
 
   # Prepare a draft release for GitHub Releases page for the manual verification
   # If accepted and published, release workflow would be triggered

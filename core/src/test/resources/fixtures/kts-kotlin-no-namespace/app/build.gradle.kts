@@ -1,0 +1,17 @@
+plugins {
+    id("com.android.application")
+}
+
+android {
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.example.oldname"
+        minSdk = 21
+        targetSdk = 34
+    }
+}
+
+dependencies {
+    implementation("androidx.appcompat:appcompat:1.6.1")
+}
