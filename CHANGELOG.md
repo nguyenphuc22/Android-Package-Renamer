@@ -8,12 +8,22 @@
 
 - Support for the latest JetBrains IDEs up to build 262 (IntelliJ IDEA 2026.2, Android Studio 2026.1.3)
 - Plugin Verifier checks against the latest IntelliJ IDEA and Android Studio releases
+- New IDE-independent `core` module (`com.github.nguyenphuc22.androidpackagerenamer.core`) containing the
+  package-renaming engine, reusable from any JVM tooling
+- Command-line interface (`package-renamer-core`) to rename an Android project from the terminal,
+  including `--dry-run` preview
+- Automated integration tests for the core module that rename real Android project fixtures
+  (manifest/gradle, Groovy/Kotlin DSL, data binding, build-directory cleanup)
+- Dedicated CI job for the core module with an end-to-end CLI test
 
 ### Changed
 
 - Migrated from the deprecated Gradle IntelliJ Plugin (1.x) to the IntelliJ Platform Gradle Plugin (2.18.1)
 - Updated build toolchain: Gradle 9.7, Kotlin 2.3.21, Java 21 in CI, Gradle Changelog Plugin 2.5.0, Kover 0.9.9
 - Removed the deprecated Gradle Qodana Plugin
+- Refactored the IntelliJ plugin into a thin adapter that delegates file operations to the `core` module
+- Removed duplicated package-name parsing from `WorkingPackage`/`ManagerFile` in favor of the shared core logic
+- Code coverage gate enforced on the core module (minimum 85% line coverage) and reported to CodeCov
 
 ### Fixed
 

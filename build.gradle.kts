@@ -30,6 +30,9 @@ repositories {
 }
 
 dependencies {
+    // Core package-renaming engine (pure Kotlin, no IntelliJ dependency)
+    implementation(project(":core"))
+
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
         // IntelliJ IDEA Community Edition as the lowest supported baseline (2024.1)
