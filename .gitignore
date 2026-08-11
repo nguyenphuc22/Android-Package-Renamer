@@ -1,4 +1,9 @@
 .gradle
 .idea
 .qodana
+.intellijPlatform
 build
+bin
+.classpath
+.project
+.settings

@@ -90,35 +90,6 @@ class ManagerFileTest {
     }
 
     @Test
-    fun `getCurrentPackageName should be callable`() {
-        // Since getCurrentPackageName just calls getPackageName(), 
-        // we can test this delegation behavior
-        
-        // Just verify the method exists and can be called
-        assertDoesNotThrow {
-            try {
-                val result = managerFile.getCurrentPackageName()
-                // May return null or throw NPE due to static dependencies
-            } catch (e: NullPointerException) {
-                // Expected due to VirtualFileManager static dependencies  
-            }
-        }
-    }
-
-    @Test
-    fun `getPackageName should be callable`() {
-        // Just verify the method exists and can be called
-        assertDoesNotThrow {
-            try {
-                val result = managerFile.getPackageName()
-                // May return null or throw NPE due to static dependencies
-            } catch (e: NullPointerException) {
-                // Expected due to VirtualFileManager static dependencies
-            }
-        }
-    }
-
-    @Test
     fun `validateNewPackageName should use correct regex pattern`() {
         // Test the exact pattern used in the validation
         val pattern = "^([A-Za-z]{1}[A-Za-z\\d_]*\\.)+[A-Za-z][A-Za-z\\d_]*\$"

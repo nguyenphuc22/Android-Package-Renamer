@@ -1,22 +1,24 @@
 package com.github.nguyenphuc22.androidpackagerenamer
 
+import com.github.nguyenphuc22.androidpackagerenamer.core.PackageNameValidator
 import com.intellij.openapi.ui.InputValidatorEx
 
 class MyValidator : InputValidatorEx {
-    val pattern = "^([A-Za-z]{1}[A-Za-z\\d_]*\\.)+[A-Za-z][A-Za-z\\d_]*\$"
+
+    val pattern: String get() = PackageNameValidator.PATTERN.pattern
+
     override fun checkInput(inputString: String?): Boolean {
-        return !inputString.isNullOrEmpty() && inputString.isNotBlank() && inputString.matches(Regex(pattern))
+        return !inputString.isNullOrEmpty() && PackageNameValidator.isValid(inputString)
     }
 
     override fun canClose(inputString: String?): Boolean {
         return true
     }
+
     override fun getErrorText(inputString: String?): String? {
-        var result : String? = null
-        if (inputString != null) {
-            if (!inputString.matches(Regex(pattern)))
-                result = "Package name is not valid"
+        if (inputString != null && !PackageNameValidator.isValid(inputString)) {
+            return "Package name is not valid"
         }
-        return result
+        return null
     }
 }
