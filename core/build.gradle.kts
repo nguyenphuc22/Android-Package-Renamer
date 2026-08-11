@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "2.3.21"
+    id("org.jetbrains.kotlin.jvm") version "2.4.10"
     // Java library to make this module consumable by other build systems
     id("java-library")
     // Application plugin to build a runnable CLI distribution
