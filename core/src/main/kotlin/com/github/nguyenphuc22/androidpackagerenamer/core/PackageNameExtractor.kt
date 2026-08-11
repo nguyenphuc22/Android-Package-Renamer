@@ -8,28 +8,37 @@ package com.github.nguyenphuc22.androidpackagerenamer.core
  */
 object PackageNameExtractor {
 
+    private val MANIFEST_PACKAGE = Regex("""package\s*=\s*"([^"]*)"""")
+    private val APPLICATION_ID = Regex("""applicationId\b\s*=?\s*"([^"]*)"""")
+    private val NAMESPACE = Regex("""namespace\b\s*=?\s*['"]([^'"]*)['"]""")
+
     fun fromManifest(manifestContent: String?): String? {
-        if (manifestContent == null || !manifestContent.contains("package=")) return null
-        return manifestContent
-            .substringAfter("package=")
-            .substringAfter("\"")
-            .substringBefore("\"")
-            .takeIf { it.isNotBlank() }
+        if (manifestContent == null) return null
+        return MANIFEST_PACKAGE.find(manifestContent)?.groupValues?.get(1)?.takeIf { it.isNotBlank() }
     }
 
     fun fromBuildGradle(gradleContent: String?): String? {
-        if (gradleContent == null || !gradleContent.contains("applicationId")) return null
-        return gradleContent
-            .substringAfter("applicationId")
-            .substringAfter("\"")
-            .substringBefore("\"")
-            .takeIf { it.isNotBlank() }
+        if (gradleContent == null) return null
+        return APPLICATION_ID.find(gradleContent)?.groupValues?.get(1)?.takeIf { it.isNotBlank() }
+    }
+
+    /**
+     * Extracts the `namespace` declaration, used as a fallback for library modules
+     * that do not declare an `applicationId`.
+     */
+    fun fromNamespace(gradleContent: String?): String? {
+        if (gradleContent == null) return null
+        return NAMESPACE.find(gradleContent)?.groupValues?.get(1)?.takeIf { it.isNotBlank() }
     }
 
     /**
      * Priority: AndroidManifest.xml `package` attribute, then `build.gradle` `applicationId`,
-     * then `build.gradle.kts` `applicationId`.
+     * then `build.gradle` `namespace`, then `build.gradle.kts` `applicationId`/`namespace`.
      */
     fun extract(manifestContent: String?, gradleContent: String?, gradleKtsContent: String?): String? =
-        fromManifest(manifestContent) ?: fromBuildGradle(gradleContent) ?: fromBuildGradle(gradleKtsContent)
+        fromManifest(manifestContent)
+            ?: fromBuildGradle(gradleContent)
+            ?: fromNamespace(gradleContent)
+            ?: fromBuildGradle(gradleKtsContent)
+            ?: fromNamespace(gradleKtsContent)
 }

@@ -65,6 +65,59 @@ class PackageNameExtractorTest {
     }
 
     @Test
+    fun `fromBuildGradle should ignore applicationIdSuffix`() {
+        val gradle = """
+            android {
+                defaultConfig {
+                    applicationIdSuffix ".debug"
+                }
+            }
+        """.trimIndent()
+        assertNull(PackageNameExtractor.fromBuildGradle(gradle))
+    }
+
+    @Test
+    fun `fromManifest should handle spacing around the equals sign`() {
+        assertEquals(
+            "com.example.app",
+            PackageNameExtractor.fromManifest("""<manifest package = "com.example.app"></manifest>"""),
+        )
+    }
+
+    @Test
+    fun `fromNamespace should extract groovy and kts namespace`() {
+        assertEquals("com.example.lib", PackageNameExtractor.fromNamespace("android { namespace 'com.example.lib' }"))
+        assertEquals("com.example.lib", PackageNameExtractor.fromNamespace("android { namespace \"com.example.lib\" }"))
+        assertEquals("com.example.lib", PackageNameExtractor.fromNamespace("android { namespace = \"com.example.lib\" }"))
+        assertNull(PackageNameExtractor.fromNamespace("android { compileSdk 34 }"))
+        assertNull(PackageNameExtractor.fromNamespace(null))
+    }
+
+    @Test
+    fun `extract should fall back to namespace when no applicationId exists`() {
+        assertEquals(
+            "com.example.lib",
+            PackageNameExtractor.extract(null, "android { namespace 'com.example.lib' }", null),
+        )
+        assertEquals(
+            "com.example.lib",
+            PackageNameExtractor.extract(null, null, "android { namespace = \"com.example.lib\" }"),
+        )
+    }
+
+    @Test
+    fun `extract should prefer applicationId over namespace`() {
+        assertEquals(
+            "com.example.app",
+            PackageNameExtractor.extract(
+                null,
+                "android { namespace 'com.example.lib' applicationId \"com.example.app\" }",
+                null,
+            ),
+        )
+    }
+
+    @Test
     fun `extract should prioritize manifest, then gradle, then gradle kts`() {
         assertEquals(
             "com.example.manifest",

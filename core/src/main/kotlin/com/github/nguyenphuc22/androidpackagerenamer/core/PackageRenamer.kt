@@ -58,17 +58,38 @@ class PackageRenamer(
         if (oldPackage == newPackage) {
             throw IllegalArgumentException("New package name must be different from the old one")
         }
+        if (!PackageNameValidator.isValid(oldPackage)) {
+            throw IllegalArgumentException("Old package name '$oldPackage' is not a valid package name")
+        }
         if (!PackageNameValidator.isValid(newPackage)) {
             throw IllegalArgumentException("New package name '$newPackage' is not a valid package name")
+        }
+        if (newPackage.startsWith("$oldPackage.")) {
+            throw IllegalArgumentException(
+                "New package name '$newPackage' extends the old package '$oldPackage', which is not supported"
+            )
+        }
+
+        val oldPath = AndroidProjectLayout.packagePath(oldPackage)
+        val newPath = AndroidProjectLayout.packagePath(newPackage)
+
+        // The old package must actually exist: either in the source tree, or matching the
+        // detected project package (for manifest/gradle-only projects). This prevents a partial
+        // rename when an explicit --old-package does not match the project.
+        val foundInSources = AndroidProjectLayout.sourceRoots(projectDir).any { root ->
+            Files.isDirectory(root) && Files.isDirectory(root.resolve(oldPath))
+        }
+        if (!foundInSources && currentPackageName() != oldPackage) {
+            throw IllegalArgumentException(
+                "Package '$oldPackage' does not match the current package " +
+                    "'${currentPackageName() ?: "unknown"}' and was not found in the source directories"
+            )
         }
 
         updateManifestAndGradle(newPackage)
 
         var movedFiles = 0
         var updatedFiles = 0
-
-        val oldPath = AndroidProjectLayout.packagePath(oldPackage)
-        val newPath = AndroidProjectLayout.packagePath(newPackage)
 
         AndroidProjectLayout.sourceRoots(projectDir).forEach { sourceRoot ->
             if (Files.isDirectory(sourceRoot)) {

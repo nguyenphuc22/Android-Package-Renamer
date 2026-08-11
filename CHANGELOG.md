@@ -29,6 +29,12 @@
 
 - Plugin not loading in IntelliJ IDEA 2025.2+ and Android Studio Narwhal 4+ due to the outdated `until-build` range
 - CI build failure caused by the leftover plugin-template sample services (`MyProjectService`) whose tests relied on the `CI` environment variable and crashed when its mock `Project` name was `null`
+- `applicationIdSuffix` being mistaken for `applicationId` when reading or rewriting `build.gradle(.kts)`
+- Manifest `package` attribute being inserted into modern (AGP 8+) projects that do not declare it
+- Renaming to a sub-package of the old package (`com.example` → `com.example.app`) corrupting the directory tree; now rejected with a clear error
+- Identifiers that only share a prefix with the old package (e.g. `com.example.appx`) being rewritten by a naive string replace; replaced with word-boundary matching
+- Partial renames when an explicit `--old-package` does not match the project; the old package is now validated before any file is touched
+- Groovy `namespace "x"` (double-quoted) and namespace-only library modules not being handled
 
 ## [1.0.0] - 2025-07-05
 

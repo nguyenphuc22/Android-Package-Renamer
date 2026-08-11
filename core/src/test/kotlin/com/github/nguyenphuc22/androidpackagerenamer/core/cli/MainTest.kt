@@ -54,6 +54,24 @@ class MainTest {
     }
 
     @Test
+    fun `should fail cleanly when explicit old package does not match the project`() {
+        TestProjectHelper.copyFixture("manifest-groovy-java", tempDir)
+        val (code, output) = runCli(
+            arrayOf(
+                "--project-dir", tempDir.toString(),
+                "--old-package", "org.wrong.package",
+                "--new-package", "com.example.newname",
+            ),
+        )
+
+        assertEquals(1, code)
+        assertTrue(output.contains("does not match the current package"))
+        // Project unchanged
+        assertTrue(Files.isRegularFile(tempDir.resolve("app/src/main/java/com/example/oldname/MainActivity.java")))
+        assertFalse(Files.exists(tempDir.resolve("app/src/main/java/com/example/newname")))
+    }
+
+    @Test
     fun `dry run should preview without modifying the project`() {
         TestProjectHelper.copyFixture("manifest-groovy-java", tempDir)
         val (code, output) = runCli(

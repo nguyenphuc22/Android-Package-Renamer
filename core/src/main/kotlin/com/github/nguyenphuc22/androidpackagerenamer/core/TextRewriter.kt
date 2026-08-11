@@ -6,37 +6,42 @@ package com.github.nguyenphuc22.androidpackagerenamer.core
  */
 object TextRewriter {
 
-    fun replacePackageReferences(content: String, oldPackage: String, newPackage: String): String =
-        content.replace(oldPackage, newPackage)
-
     /**
-     * Updates the `package` attribute of an `AndroidManifest.xml` file, or inserts it
-     * right after the `<manifest` tag when it is absent.
+     * Replaces whole-word occurrences of the old package, so identifiers that merely share a
+     * prefix (e.g. `com.foo.appx`) are left untouched while sub-packages (`com.foo.app.core`)
+     * are still renamed.
      */
-    fun updateManifestPackage(content: String, newPackage: String): String {
-        if (content.contains("package=")) {
-            val current = content.substringAfter("package=").substringAfter("\"").substringBefore("\"")
-            if (current.isBlank()) {
-                throw IllegalStateException("Cannot parse the package attribute from AndroidManifest.xml")
-            }
-            return content.replace(current, newPackage)
-        }
-        val manifestIndex = content.indexOf("<manifest")
-        if (manifestIndex == -1) {
-            throw IllegalStateException("Invalid AndroidManifest.xml format: <manifest> tag not found")
-        }
-        val insertPos = manifestIndex + "<manifest".length
-        return StringBuilder(content).insert(insertPos, " package=\"$newPackage\"").toString()
+    fun replacePackageReferences(content: String, oldPackage: String, newPackage: String): String {
+        val pattern = Regex("\\b" + Regex.escape(oldPackage) + "\\b")
+        return pattern.replace(content, newPackage)
     }
 
     /**
-     * Updates the `applicationId` value of a `build.gradle` or `build.gradle.kts` file.
+     * Updates the `package` attribute of an `AndroidManifest.xml` file.
+     * When the attribute is absent (modern AGP 8+ projects) the manifest is left untouched,
+     * since the namespace in `build.gradle(.kts)` is the source of truth.
+     */
+    fun updateManifestPackage(content: String, newPackage: String): String {
+        if (!content.contains("package=")) return content
+        val pattern = Regex("""package\s*=\s*"([^"]*)"""")
+        val current = pattern.find(content)?.groupValues?.get(1)
+        if (current.isNullOrBlank()) {
+            throw IllegalStateException("Cannot parse the package attribute from AndroidManifest.xml")
+        }
+        return content.replace(current, newPackage)
+    }
+
+    /**
+     * Updates the `applicationId` value of a `build.gradle` or `build.gradle.kts` file,
+     * supporting both `applicationId "..."` (Groovy) and `applicationId = "..."` (Kotlin DSL)
+     * and never matching `applicationIdSuffix`.
      */
     fun updateApplicationId(content: String, newPackage: String): String {
-        if (!content.contains("applicationId")) return content
-        val currentAppId = content.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
-        if (currentAppId.isBlank()) return content
-        return content.replace(currentAppId, newPackage)
+        val pattern = Regex("""applicationId\b\s*=?\s*"([^"]*)"""")
+        return pattern.replace(content) { match ->
+            val hasEquals = match.value.contains("=")
+            if (hasEquals) "applicationId = \"$newPackage\"" else "applicationId \"$newPackage\""
+        }
     }
 
     /**
@@ -55,13 +60,14 @@ object TextRewriter {
     }
 
     /**
-     * Updates an existing `namespace` declaration in a `build.gradle`/`build.gradle.kts` file,
-     * or inserts a new one when it is missing.
+     * Updates an existing `namespace` declaration (Groovy `namespace 'x'`/`namespace "x"` or
+     * Kotlin DSL `namespace = "x"`), or inserts a new one when it is missing.
      */
     fun updateNamespace(content: String, newPackage: String, isKotlinDsl: Boolean): String {
-        val replacement = if (isKotlinDsl) "namespace = \"$newPackage\"" else "namespace '$newPackage'"
-        val pattern = if (isKotlinDsl) Regex("""namespace\s*=\s*"[^"]*"""") else Regex("""namespace\s*'[^']*'""")
-        val updated = pattern.replaceFirst(content, replacement)
-        return if (updated != content) updated else addNamespaceIfMissing(content, newPackage, isKotlinDsl)
+        val pattern = Regex("""namespace\s*=?\s*['"][^'"]*['"]""")
+        val match = pattern.find(content) ?: return addNamespaceIfMissing(content, newPackage, isKotlinDsl)
+        val hasEquals = match.value.contains("=")
+        val replacement = if (hasEquals) "namespace = \"$newPackage\"" else "namespace '$newPackage'"
+        return content.replaceFirst(match.value, replacement)
     }
 }

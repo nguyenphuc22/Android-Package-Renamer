@@ -15,6 +15,25 @@ class TextRewriterTest {
         </manifest>
     """.trimIndent()
 
+    // ---------- replacePackageReferences ----------
+
+    @Test
+    fun `replacePackageReferences should replace all occurrences`() {
+        val content = "package com.example.old\nimport com.example.old.util.Helper\nval x = \"com.example.old\""
+        val updated = TextRewriter.replacePackageReferences(content, "com.example.old", "com.example.new")
+        assertTrue(!updated.contains("com.example.old"))
+        assertTrue(updated.contains("com.example.new"))
+    }
+
+    @Test
+    fun `replacePackageReferences should respect word boundaries`() {
+        val content = "com.foo.app com.foo.appx mycom.foo.app com.foo.app.core comfoo.app"
+        val updated = TextRewriter.replacePackageReferences(content, "com.foo.app", "com.foo.app2")
+        assertEquals("com.foo.app2 com.foo.appx mycom.foo.app com.foo.app2.core comfoo.app", updated)
+    }
+
+    // ---------- updateManifestPackage ----------
+
     @Test
     fun `updateManifestPackage should replace existing package attribute`() {
         val updated = TextRewriter.updateManifestPackage(manifestWithPackage, "com.example.new")
@@ -23,19 +42,19 @@ class TextRewriterTest {
     }
 
     @Test
-    fun `updateManifestPackage should insert attribute when missing`() {
+    fun `updateManifestPackage should leave manifest unchanged when package attribute is missing`() {
         val noPackage = """<manifest xmlns:android="http://schemas.android.com/apk/res/android">"""
-        val updated = TextRewriter.updateManifestPackage(noPackage, "com.example.new")
-        assertTrue(updated.contains("package=\"com.example.new\""))
-        assertTrue(updated.indexOf("<manifest") < updated.indexOf("package="))
+        assertEquals(noPackage, TextRewriter.updateManifestPackage(noPackage, "com.example.new"))
     }
 
     @Test
-    fun `updateManifestPackage should throw on invalid manifest`() {
+    fun `updateManifestPackage should throw on empty package attribute`() {
         assertThrows(IllegalStateException::class.java) {
-            TextRewriter.updateManifestPackage("<application></application>", "com.example.new")
+            TextRewriter.updateManifestPackage("""<manifest package=""></manifest>""", "com.example.new")
         }
     }
+
+    // ---------- updateApplicationId ----------
 
     @Test
     fun `updateApplicationId should replace groovy and kts applicationId`() {
@@ -47,10 +66,20 @@ class TextRewriterTest {
     }
 
     @Test
+    fun `updateApplicationId should not touch applicationIdSuffix`() {
+        val content = "applicationIdSuffix \".debug\"\n    applicationId \"com.example.old\""
+        val updated = TextRewriter.updateApplicationId(content, "com.example.new")
+        assertTrue(updated.contains("applicationIdSuffix \".debug\""))
+        assertTrue(updated.contains("applicationId \"com.example.new\""))
+    }
+
+    @Test
     fun `updateApplicationId should leave content untouched when applicationId is missing`() {
         val content = "android { compileSdk 34 }"
         assertEquals(content, TextRewriter.updateApplicationId(content, "com.example.new"))
     }
+
+    // ---------- addNamespaceIfMissing ----------
 
     @Test
     fun `addNamespaceIfMissing should insert groovy and kts namespace`() {
@@ -69,9 +98,19 @@ class TextRewriterTest {
         assertEquals(groovy, TextRewriter.addNamespaceIfMissing(groovy, "com.example.new", isKotlinDsl = false))
     }
 
+    // ---------- updateNamespace ----------
+
     @Test
-    fun `updateNamespace should update existing groovy namespace`() {
+    fun `updateNamespace should update existing groovy single-quote namespace`() {
         val groovy = "android {\n    namespace 'com.example.old'\n}"
+        val updated = TextRewriter.updateNamespace(groovy, "com.example.new", isKotlinDsl = false)
+        assertTrue(updated.contains("namespace 'com.example.new'"))
+        assertTrue(!updated.contains("com.example.old"))
+    }
+
+    @Test
+    fun `updateNamespace should update existing groovy double-quote namespace`() {
+        val groovy = "android {\n    namespace \"com.example.old\"\n}"
         val updated = TextRewriter.updateNamespace(groovy, "com.example.new", isKotlinDsl = false)
         assertTrue(updated.contains("namespace 'com.example.new'"))
         assertTrue(!updated.contains("com.example.old"))
@@ -90,13 +129,5 @@ class TextRewriterTest {
         val groovy = "android {\n    compileSdk 34\n}"
         val updated = TextRewriter.updateNamespace(groovy, "com.example.new", isKotlinDsl = false)
         assertTrue(updated.contains("namespace 'com.example.new'"))
-    }
-
-    @Test
-    fun `replacePackageReferences should replace all occurrences`() {
-        val content = "package com.example.old\nimport com.example.old.util.Helper\nval x = \"com.example.old\""
-        val updated = TextRewriter.replacePackageReferences(content, "com.example.old", "com.example.new")
-        assertTrue(!updated.contains("com.example.old"))
-        assertTrue(updated.contains("com.example.new"))
     }
 }
