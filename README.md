@@ -59,6 +59,31 @@ To report a specific problem or feature request, open a new issue on Github. For
 
 <!-- Plugin description end -->
 
+## Core module & CLI
+
+The renaming engine lives in the [core](core/) module: a pure Kotlin/JVM library with **no IntelliJ
+Platform dependency**. It can be reused by any JVM tooling (terminal scripts, Gradle plugins, CI bots, ...).
+
+Build and run the command-line tool:
+
+```bash
+./gradlew :core:installDist
+core/build/install/package-renamer-core/bin/package-renamer-core \
+  --project-dir /path/to/android-project \
+  --new-package com.example.newname
+```
+
+The CLI detects the current package automatically (from `AndroidManifest.xml` or `build.gradle(.kts)`)
+and performs the same refactoring as the IDE plugin. Useful options:
+
+- `--old-package <name>` — explicit old package (otherwise auto-detected)
+- `--no-clean` — keep the `build/` directories
+- `--dry-run` — preview changes on a temporary copy without touching the project
+- `-h, --help` — show all options
+
+Run `./gradlew :core:test` for the core unit and integration tests, which run on real Android
+project fixtures (`core/src/test/resources/fixtures`).
+
 ## License
 
 Apache 2.0. See the [LICENSE](https://github.com/nguyenphuc22/Android-Package-Renamer/blob/main/LICENSE.md) file for details.

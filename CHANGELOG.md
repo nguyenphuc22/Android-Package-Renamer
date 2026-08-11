@@ -4,6 +4,38 @@
 
 ## [Unreleased]
 
+### Added
+
+- Support for the latest JetBrains IDEs up to build 262 (IntelliJ IDEA 2026.2, Android Studio 2026.1.3)
+- Plugin Verifier checks against the latest IntelliJ IDEA and Android Studio releases
+- New IDE-independent `core` module (`com.github.nguyenphuc22.androidpackagerenamer.core`) containing the
+  package-renaming engine, reusable from any JVM tooling
+- Command-line interface (`package-renamer-core`) to rename an Android project from the terminal,
+  including `--dry-run` preview
+- Automated integration tests for the core module that rename real Android project fixtures
+  (manifest/gradle, Groovy/Kotlin DSL, data binding, build-directory cleanup)
+- Dedicated CI job for the core module with an end-to-end CLI test
+
+### Changed
+
+- Migrated from the deprecated Gradle IntelliJ Plugin (1.x) to the IntelliJ Platform Gradle Plugin (2.18.1)
+- Updated build toolchain: Gradle 9.7, Kotlin 2.3.21, Java 21 in CI, Gradle Changelog Plugin 2.5.0, Kover 0.9.9
+- Removed the deprecated Gradle Qodana Plugin
+- Refactored the IntelliJ plugin into a thin adapter that delegates file operations to the `core` module
+- Removed duplicated package-name parsing from `WorkingPackage`/`ManagerFile` in favor of the shared core logic
+- Code coverage gate enforced on the core module (minimum 85% line coverage) and reported to CodeCov
+
+### Fixed
+
+- Plugin not loading in IntelliJ IDEA 2025.2+ and Android Studio Narwhal 4+ due to the outdated `until-build` range
+- CI build failure caused by the leftover plugin-template sample services (`MyProjectService`) whose tests relied on the `CI` environment variable and crashed when its mock `Project` name was `null`
+- `applicationIdSuffix` being mistaken for `applicationId` when reading or rewriting `build.gradle(.kts)`
+- Manifest `package` attribute being inserted into modern (AGP 8+) projects that do not declare it
+- Renaming to a sub-package of the old package (`com.example` → `com.example.app`) corrupting the directory tree; now rejected with a clear error
+- Identifiers that only share a prefix with the old package (e.g. `com.example.appx`) being rewritten by a naive string replace; replaced with word-boundary matching
+- Partial renames when an explicit `--old-package` does not match the project; the old package is now validated before any file is touched
+- Groovy `namespace "x"` (double-quoted) and namespace-only library modules not being handled
+
 ## [1.0.0] - 2025-07-05
 
 ### Added

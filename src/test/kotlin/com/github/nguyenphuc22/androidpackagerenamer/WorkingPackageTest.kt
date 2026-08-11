@@ -4,17 +4,17 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFileSystem
-import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.editor.Document
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
@@ -28,21 +28,6 @@ class WorkingPackageTest {
 
     @Mock
     private lateinit var mockPresentation: Presentation
-
-    @Mock
-    private lateinit var mockVirtualFileManager: VirtualFileManager
-
-    @Mock
-    private lateinit var mockVirtualFileSystem: VirtualFileSystem
-
-    @Mock
-    private lateinit var mockVirtualFile: VirtualFile
-
-    @Mock
-    private lateinit var mockDocument: Document
-
-    @Mock
-    private lateinit var mockFileDocumentManager: FileDocumentManager
 
     private lateinit var workingPackage: WorkingPackage
 
@@ -86,25 +71,7 @@ class WorkingPackageTest {
     }
 
     @Test
-    fun `getPackageName should be callable with project parameter`() {
-        // Just test that the method exists and can be called
-        // Complex VirtualFileManager mocking is not practical in unit tests
-        
-        // Act & Assert - Just verify method signature and basic behavior
-        assertDoesNotThrow {
-            // Method may throw NPE due to static dependencies, that's expected
-            try {
-                workingPackage.getPackageName(mockProject)
-            } catch (e: NullPointerException) {
-                // Expected due to VirtualFileManager static dependencies
-            }
-        }
-    }
-
-    @Test
     fun `should extract package name from manifest when available`() {
-        // This is a complex integration test that would require extensive mocking
-        // For now, we'll test the string parsing logic separately
         val manifestContent = """
             <?xml version="1.0" encoding="utf-8"?>
             <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -114,7 +81,6 @@ class WorkingPackageTest {
             </manifest>
         """.trimIndent()
 
-        // Test the parsing logic
         assertTrue(manifestContent.contains("package"))
         val packageName = manifestContent.substringAfter("package=").substringAfter("\"").substringBefore("\"")
         assertEquals("com.example.testapp", packageName)
@@ -133,7 +99,6 @@ class WorkingPackageTest {
             }
         """.trimIndent()
 
-        // Test the parsing logic
         assertTrue(gradleContent.contains("applicationId"))
         val packageName = gradleContent.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
         assertEquals("com.example.gradleapp", packageName)
@@ -152,7 +117,6 @@ class WorkingPackageTest {
             }
         """.trimIndent()
 
-        // Test the parsing logic for KTS format
         assertTrue(gradleKtsContent.contains("applicationId"))
         val packageName = gradleKtsContent.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
         assertEquals("com.example.kotlinapp", packageName)
@@ -164,7 +128,7 @@ class WorkingPackageTest {
         val validManifest = """<manifest package="com.example.app">"""
         val result = validManifest.substringAfter("package=").substringAfter("\"").substringBefore("\"")
         assertEquals("com.example.app", result)
-        
+
         // Test contains function
         assertTrue(validManifest.contains("package"))
         assertFalse(validManifest.contains("nonexistent"))

@@ -1,21 +1,15 @@
 package com.github.nguyenphuc22.androidpackagerenamer
 
+import com.github.nguyenphuc22.androidpackagerenamer.core.PackageNameExtractor
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ContentNotification
-import com.github.nguyenphuc22.androidpackagerenamer.objectMain.InfoProject
 import com.github.nguyenphuc22.androidpackagerenamer.objectMain.ManagerFile
 import com.github.nguyenphuc22.androidpackagerenamer.refactor.PsiRefactor
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
-import java.io.File
-import java.io.IOException
-import java.lang.StringBuilder
 
 class WorkingPackage : AnAction() {
     override fun update(e: AnActionEvent) {
@@ -53,34 +47,19 @@ class WorkingPackage : AnAction() {
     }
 
     fun getPackageName(project: Project): String? {
+        val basePath = project.basePath ?: return null
         val vfs = VirtualFileManager.getInstance().getFileSystem("file")
-        val manifest = vfs.findFileByPath(project.basePath + "/app/src/main/AndroidManifest.xml")
-        manifest?.let { manifestVir ->
-            val dataManifest = FileDocumentManager.getInstance().getDocument(manifestVir)!!.text
-            if (dataManifest.contains("package")) {
-                val packageName = dataManifest.substringAfter("package=").substringAfter("\"").substringBefore("\"")
-                return packageName
-            } else {
-                var sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle")
-                sourceDir?.let {
-                    val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
-                    if (dataGradle.contains("applicationId")) {
-                        val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
-                        return packageName
-                    }
-                }
 
-                sourceDir = vfs.findFileByPath(project.basePath + "/app/build.gradle.kts")
-                sourceDir?.let {
-                    val dataGradle = FileDocumentManager.getInstance().getDocument(it)!!.text
-                    if (dataGradle.contains("applicationId")) {
-                        val packageName = dataGradle.substringAfter("applicationId").substringAfter("\"").substringBefore("\"")
-                        return packageName
-                    }
-                }
-            }
-        }
+        val manifestText = vfs.findFileByPath("$basePath/app/src/main/AndroidManifest.xml")
+            ?.let { FileDocumentManager.getInstance().getDocument(it)?.text }
+        manifestText?.let { PackageNameExtractor.fromManifest(it)?.let { manifestPackage -> return manifestPackage } }
 
-        return null
+        val gradleText = vfs.findFileByPath("$basePath/app/build.gradle")
+            ?.let { FileDocumentManager.getInstance().getDocument(it)?.text }
+        gradleText?.let { PackageNameExtractor.fromBuildGradle(it)?.let { gradlePackage -> return gradlePackage } }
+
+        val gradleKtsText = vfs.findFileByPath("$basePath/app/build.gradle.kts")
+            ?.let { FileDocumentManager.getInstance().getDocument(it)?.text }
+        return gradleKtsText?.let { PackageNameExtractor.fromBuildGradle(it) }
     }
 }
