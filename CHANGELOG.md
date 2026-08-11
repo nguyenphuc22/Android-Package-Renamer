@@ -18,6 +18,7 @@
 ### Fixed
 
 - Plugin not loading in IntelliJ IDEA 2025.2+ and Android Studio Narwhal 4+ due to the outdated `until-build` range
+- CI build failure caused by the leftover plugin-template sample services (`MyProjectService`) whose tests relied on the `CI` environment variable and crashed when its mock `Project` name was `null`
 
 ## [1.0.0] - 2025-07-05
 
