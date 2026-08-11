@@ -55,6 +55,11 @@ jobs:
           distribution: zulu
           java-version: 21
 
+      # Setup Gradle and cache the Gradle distribution, dependencies and build cache
+      # (speeds up subsequent runs, including the large Plugin Verifier IDE downloads)
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
       # Install Gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -88,8 +93,11 @@ jobs:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
 
-      # Upload Kover reports to CodeCov (plugin module + core module)
+      # Upload Kover reports to CodeCov (plugin module + core module).
+      # The action requires a CODECOV_TOKEN secret which is not configured in this repo,
+      # so a missing/failed upload must not fail the build.
       - name: Upload Code Coverage Report
+        continue-on-error: true
         uses: codecov/codecov-action@v5
         with:
           files: |
@@ -143,6 +151,10 @@ jobs:
         with:
           distribution: zulu
           java-version: 21
+
+      # Setup Gradle and cache the Gradle distribution, dependencies and build cache
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       # Install Gradle
       - name: Grant execute permission for gradlew
