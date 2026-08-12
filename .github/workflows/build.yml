@@ -98,7 +98,7 @@ jobs:
       # so a missing/failed upload must not fail the build.
       - name: Upload Code Coverage Report
         continue-on-error: true
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: |
             ${{ github.workspace }}/build/reports/kover/xml/report.xml
