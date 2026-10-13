@@ -8,7 +8,7 @@ plugins {
     // Application plugin to build a runnable CLI distribution
     id("application")
     // Gradle Kover Plugin for coverage reports
-    id("org.jetbrains.kotlinx.kover") version "0.9.9"
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 group = rootProject.group
