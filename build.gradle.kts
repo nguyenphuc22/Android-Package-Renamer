@@ -15,7 +15,7 @@ plugins {
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "2.5.0"
     // Gradle Kover Plugin
-    id("org.jetbrains.kotlinx.kover") version "0.9.9"
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 group = properties("pluginGroup")
